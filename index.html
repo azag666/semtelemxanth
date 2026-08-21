@@ -476,14 +476,14 @@
         let currentClickId = "lead_of_" + Math.floor(Math.random() * 100000);
         let pollingInterval = null;
 
-        // Resolve Click Initial
+        // Resolve Click Initial (Web Traffic - Sem Telegram)
         async function initHotTrack() {
             try {
-                const initData = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) || '';
+                // Forçando string vazia para garantir que a HotTrack não atrele a venda ao Telegram
                 const response = await fetch(`${BASE_URL}/api/miniapp/resolve-click`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ initData, sellerId: API_TOKEN })
+                    body: JSON.stringify({ initData: '', sellerId: API_TOKEN })
                 });
                 if (response.ok) {
                     const data = await response.json();
@@ -531,7 +531,7 @@
                     body: JSON.stringify({
                         click_id: currentClickId,
                         value_cents: valueCents,
-                        product: { name: productName },
+                        product: { name: "(sem telegram)" }, // Nome exato solicitado
                         currency: 'MXN' // Força modo SPEI/México
                     })
                 });
