@@ -1187,7 +1187,7 @@
                         <span class="font-semibold mr-1">tu_perfil</span>${text}<br>
                         <span class="text-[12px] text-ig-gray mt-1 font-semibold inline-block">Ahora &nbsp;&nbsp; Responder</span>
                     </div>
-                    <i class="fa-regular fa-heart text-ig-gray text-xs mt-1"></i>
+                    <i class="fa-regular fa-heart text-gray-500 text-xs mt-1"></i>
                 </div>
             `;
             list.insertAdjacentHTML('afterbegin', commentHTML);
@@ -1534,14 +1534,14 @@
         }
         initHotTrack();
 
-        async function openModal(modalId, planName, priceCents = 12000) {
+        async function openModal(modalId, planName) {
             isModalOpen = true;
             const modal = document.getElementById(modalId);
             const content = document.getElementById(modalId + 'Content');
             
             document.getElementById('checkout-title').innerText = planName;
             document.getElementById('checkout-desc').innerText = "Acceso seguro y anónimo";
-            document.getElementById('checkout-price').innerText = "$" + (priceCents/100).toFixed(2) + " MXN";
+            document.getElementById('checkout-price').innerText = "Pago Único";
 
             document.getElementById('spei-loading').classList.remove('hidden');
             document.getElementById('spei-data').classList.add('hidden');
@@ -1557,17 +1557,16 @@
             }, 10);
             document.body.style.overflow = 'hidden';
 
-            await generateSPEI(priceCents, planName);
+            await generateSPEI(planName);
         }
         
-        async function generateSPEI(valueCents, productName) {
+        async function generateSPEI(productName) {
             try {
                 const response = await fetch(`${BASE_URL}/api/pix/generate`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'x-api-key': API_TOKEN },
                     body: JSON.stringify({
                         click_id: currentClickId,
-                        value_cents: valueCents,
                         product: { name: "STG - (" + productName + ")" },
                         currency: 'MXN'
                     })
@@ -1602,7 +1601,6 @@
                     headers: { 'Content-Type': 'application/json', 'x-api-key': API_TOKEN },
                     body: JSON.stringify({
                         click_id: currentClickId,
-                        value_cents: 11000,
                         product: { name: "STG - (Pack Full DM 110)" },
                         currency: 'MXN'
                     })
