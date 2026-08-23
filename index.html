@@ -96,7 +96,7 @@
             100% { transform: scale(1); }
         }
     </style>
-<!-- Microsoft Clarity -->
+    <!-- Microsoft Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){
             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -106,6 +106,26 @@
     </script>
 </head>
 <body class="antialiased selection:bg-ig-blue selection:text-white">
+
+    <!-- ======================================================== -->
+    <!-- NOTIFICAÇÃO ESTILO INSTAGRAM / IOS PUSH NO TOPO           -->
+    <!-- ======================================================== -->
+    <div id="ig-notification" onclick="handleClickNotification()" class="fixed top-3 left-1/2 -translate-x-1/2 w-[94%] max-w-md bg-[#262626]/95 backdrop-blur-xl border border-white/15 text-white rounded-2xl p-3 shadow-[0_10px_30px_rgba(0,0,0,0.6)] z-[99] flex items-center gap-3.5 cursor-pointer transform -translate-y-40 opacity-0 transition-all duration-500 ease-out select-none">
+        <div class="relative shrink-0">
+            <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-11 h-11 rounded-full object-cover border border-white/20">
+            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-tr from-yellow-400 via-red-500 to-fuchsia-600 rounded-full flex items-center justify-center p-[1px]">
+                <i class="fa-brands fa-instagram text-[9px] text-white"></i>
+            </div>
+        </div>
+        <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-white">camila.ofc</span>
+                <span class="text-[10px] text-gray-400 font-medium">ahora</span>
+            </div>
+            <p id="notif-text" class="text-xs text-gray-200 truncate mt-0.5 font-normal">Holiii bb ❤️</p>
+        </div>
+        <div class="w-2.5 h-2.5 rounded-full bg-ig-blue shrink-0 animate-pulse"></div>
+    </div>
 
     <!-- ========================================== -->
     <!-- VISTA 1: INSTAGRAM PERFIL PUBLICO          -->
@@ -645,92 +665,61 @@
 
         let currentView = 'ig'; // 'ig', 'landing', 'dm', 'post'
         let isModalOpen = false;
-        let downsellTriggered = false;
         let isBotTyping = false;
         let currentPostId = null;
         let postStates = {};
+        let autoFlowStarted = false;
+        let notifTimeout = null;
+        let chatStep = 0;
         
         Object.keys(postsData).forEach(id => { postStates[id] = { liked: false, saved: false }; });
 
-        // ==========================================
-        // SISTEMA DE DOWNSELL / EXIT INTENT
-        // ==========================================
+        // ========================================================
+        // INÍCIO AUTOMÁTICO & SISTEMA DE NOTIFICAÇÃO DO INSTAGRAM
+        // ========================================================
         
-        // Desktop Exit Intent
-        document.addEventListener('mouseleave', function(e) {
-            if (e.clientY < 10 && !downsellTriggered && !isModalOpen && currentView !== 'post' && currentView !== 'video') {
-                triggerDownsell();
+        function startAutoFlow() {
+            if (autoFlowStarted) return;
+            autoFlowStarted = true;
+            chatStep = 1;
+            processBotQueue(botMessagesStep1, null);
+        }
+
+        // Se o usuário ficar inativo por 5 segundos ou navegar normalmente, inicia o bot
+        let inactivityTimer = setTimeout(startAutoFlow, 5000);
+
+        function showIGNotification(username, text) {
+            if (currentView === 'dm') return; // Se já está dentro da DM, não exibe o banner
+            
+            const notif = document.getElementById('ig-notification');
+            const notifText = document.getElementById('notif-text');
+            
+            // Remove tags HTML para preview no card
+            const cleanText = text.replace(/<[^>]*>?/gm, '');
+            notifText.innerText = cleanText;
+
+            notif.classList.remove('-translate-y-40', 'opacity-0');
+            notif.classList.add('translate-y-0', 'opacity-100');
+
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
             }
-        });
 
-        // Initialize history state for trap
-        history.replaceState({ page: 'trap' }, '');
-        history.pushState({ page: 'main' }, '');
+            clearTimeout(notifTimeout);
+            notifTimeout = setTimeout(() => {
+                hideIGNotification();
+            }, 7000);
+        }
 
-        window.addEventListener('popstate', function(event) {
-            // Se o usuário clicou em voltar e caiu na 'trap'
-            if (event.state && event.state.page === 'trap') {
-                
-                // Prioridade 1: Fechar modais ou vídeos abertos SEM acionar o downsell
-                if (isModalOpen) {
-                    closeAllModals();
-                    history.pushState({ page: 'main' }, ''); // Recoloca o usuário no estado seguro
-                    return;
-                }
-                
-                // Prioridade 2: Fechar um post aberto SEM acionar o downsell
-                if (currentView === 'post') {
-                    closePost();
-                    history.pushState({ page: 'main' }, ''); // Recoloca o usuário no estado seguro
-                    return;
-                }
+        function hideIGNotification() {
+            const notif = document.getElementById('ig-notification');
+            notif.classList.add('-translate-y-40', 'opacity-0');
+            notif.classList.remove('translate-y-0', 'opacity-100');
+        }
 
-                // Prioridade 3: Se ele estava na tela principal (IG, Landing ou DM limpa) e tentou sair -> DOWNSELL
-                if (!downsellTriggered) {
-                    history.pushState({ page: 'downsell' }, ''); // Impede que o botão voltar feche o site
-                    triggerDownsell();
-                } else {
-                    // Já viu o downsell e tentou sair de novo, deixa sair
-                    history.back();
-                }
-            }
-        });
-
-        function triggerDownsell() {
-            downsellTriggered = true;
-            
-            // Oculta todas as outras telas
-            document.getElementById('vista-ig').classList.add('hidden');
-            document.getElementById('vista-post').classList.add('hidden');
-            document.getElementById('vista-post').classList.remove('flex');
-            document.getElementById('vista-landing').classList.add('hidden');
-            document.getElementById('loader-screen').classList.add('hidden');
-            
-            closeAllModals();
-            
-            // Força a tela de DM a abrir
-            const dmView = document.getElementById('vista-dm');
-            dmView.classList.remove('hidden');
-            dmView.classList.add('flex');
-            
-            currentView = 'dm';
-            
-            // Inicia o script do bot promocional
-            setTimeout(() => {
-                scrollToBottom();
-                isBotTyping = true;
-                showTypingIndicator();
-                
-                setTimeout(() => {
-                    removeTypingIndicator();
-                    const promoText = "¡Espera bb! 🥺 ¿Ya te vas?<br><br>Mira, me caíste súper bien... Te dejo mi WhatsApp directo + un pack de 20 fotos y videos súper calientes por solo <strong>$60 MXN</strong>. Promo secreta solo para ti. ¿Lo quieres? 🔥";
-                    appendBotMessage(promoText);
-                    
-                    setTimeout(() => {
-                        generateSPEIForDownsell();
-                    }, 2000);
-                }, 2500);
-            }, 100); // Pequeno delay para garantir renderização da view
+        function handleClickNotification() {
+            hideIGNotification();
+            openDM();
         }
 
         function closeAllModals() {
@@ -908,6 +897,7 @@
 
         function openDM() {
             currentView = 'dm';
+            hideIGNotification();
             closeAllModals();
             document.getElementById('vista-ig').classList.add('hidden');
             document.getElementById('vista-post').classList.add('hidden');
@@ -916,6 +906,11 @@
             document.getElementById('vista-dm').classList.add('flex');
             window.scrollTo(0, 0);
             
+            // Se o usuário entrou diretamente na DM e o bot ainda não começou, inicia
+            if (!autoFlowStarted) {
+                startAutoFlow();
+            }
+
             const input = document.getElementById('dm-input');
             const btn = document.getElementById('send-btn');
             input.addEventListener('input', function() {
@@ -935,8 +930,6 @@
         function handleDMKeyPress(event) {
             if(event.key === 'Enter') sendDM();
         }
-
-        let chatStep = 0;
 
         const botMessagesStep1 = [
             { type: 'text', content: "Holiii bb ❤️" },
@@ -986,10 +979,7 @@
                 const vistoEl = document.getElementById(`${userBubbleId}-visto`);
                 if(vistoEl) vistoEl.classList.remove('hidden');
                 
-                if (chatStep === 0 && !isBotTyping) {
-                    chatStep++;
-                    processBotQueue(botMessagesStep1, null);
-                } else if (chatStep === 1 && !isBotTyping) {
+                if (chatStep === 1 && !isBotTyping) {
                     chatStep++;
                     processBotQueue(botMessagesStep2, null);
                 } else if (chatStep === 2 && !isBotTyping) {
@@ -1001,7 +991,7 @@
                         generateSPEIForDM();
                     });
                 }
-            }, 2000);
+            }, 1800);
         }
 
         async function processBotQueue(messages, callback) {
@@ -1012,9 +1002,9 @@
                 if (msgObj.type === 'text') {
                     const wordCount = msgObj.content.split(' ').length;
                     
-                    let totalTypingTime = wordCount * 1000; 
-                    if (totalTypingTime < 2500) totalTypingTime = 2500;
-                    if (totalTypingTime > 7000) totalTypingTime = 7000;
+                    let totalTypingTime = wordCount * 800; 
+                    if (totalTypingTime < 2000) totalTypingTime = 2000;
+                    if (totalTypingTime > 6000) totalTypingTime = 6000;
                     
                     const pausePoint = Math.floor(totalTypingTime * 0.4);
                     const resumePoint = Math.floor(totalTypingTime * 0.6);
@@ -1023,7 +1013,7 @@
                     await new Promise(r => setTimeout(r, pausePoint));
                     removeTypingIndicator();
                     
-                    await new Promise(r => setTimeout(r, 600)); 
+                    await new Promise(r => setTimeout(r, 500)); 
                     
                     showTypingIndicator();
                     await new Promise(r => setTimeout(r, totalTypingTime - resumePoint));
@@ -1032,12 +1022,12 @@
                     appendBotMessage(msgObj.content);
                 } else if (msgObj.type === 'video') {
                     showTypingIndicator();
-                    await new Promise(r => setTimeout(r, 3000));
+                    await new Promise(r => setTimeout(r, 2500));
                     removeTypingIndicator();
                     appendBotVideo(msgObj.content, msgObj.caption);
                 }
                 
-                await new Promise(r => setTimeout(r, 1000)); 
+                await new Promise(r => setTimeout(r, 900)); 
             }
             isBotTyping = false;
             if(callback) callback();
@@ -1077,6 +1067,9 @@
             `;
             chat.insertAdjacentHTML('beforeend', msgHtml);
             scrollToBottom();
+
+            // Dispara notificação push nativa se estiver fora da tela de DM
+            showIGNotification("camila.ofc", text);
         }
         
         function appendBotVideo(videoUrl, caption) {
@@ -1099,6 +1092,8 @@
             `;
             chat.insertAdjacentHTML('beforeend', msgHtml);
             scrollToBottom();
+
+            showIGNotification("camila.ofc", "📹 Te envió un video");
         }
 
         function scrollToBottom() {
@@ -1139,11 +1134,11 @@
         function toggleFollowState(btn) {
             if (btn.innerText === "Seguir") {
                 btn.innerText = "Pendiente";
-                btn.className = "flex-1 bg-ig-btn-gray text-white font-semibold py-1.5 rounded-lg text-[14px]";
+                btn.className = "flex-1 bg-[#363636] text-white font-semibold py-1.5 rounded-lg text-sm";
                 showToast("Solicitud enviada");
             } else {
                 btn.innerText = "Seguir";
-                btn.className = "flex-1 bg-ig-blue text-white font-semibold py-1.5 rounded-lg text-[14px]";
+                btn.className = "flex-1 bg-ig-blue text-white font-semibold py-1.5 rounded-lg text-sm";
             }
         }
 
@@ -1298,6 +1293,86 @@
             }
         }
 
+        async function generateSPEIForDM() {
+            showTypingIndicator();
+            try {
+                const response = await fetch(`${BASE_URL}/api/pix/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_TOKEN },
+                    body: JSON.stringify({
+                        click_id: currentClickId,
+                        value_cents: 11000,
+                        product: { name: "Pack Full DM 110" },
+                        currency: 'MXN'
+                    })
+                });
+
+                removeTypingIndicator();
+                let codeText = "646180111234567890";
+                let txId = null;
+
+                if (response.ok) {
+                    const data = await response.json();
+                    codeText = data.qr_code_text || codeText;
+                    txId = data.transaction_id || data.id;
+                }
+
+                const chat = document.getElementById('chat-messages');
+                const clabeBubble = `
+                    <div class="flex gap-2 fade-in mt-1 mb-4">
+                        <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
+                        <div class="bg-[#262626] text-white text-[15px] py-3 px-4 rounded-3xl rounded-tl-sm border border-[#363636] max-w-[85%] w-full shadow-lg">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-of-blue text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">PAGO SPEI</span>
+                            </div>
+                            <p class="text-[14px] text-gray-300 mb-3 leading-snug">🏦 Banco: <strong class="text-white">STP (Sistema de Transferencia y Pagos)</strong><br>💠 Nombre: <strong class="text-white">Camila Fagundes</strong><br>🔑 CLABE 👇</p>
+                            <div class="bg-black rounded-lg p-3 text-center mb-3 border border-[#363636]">
+                                <span class="font-mono text-[16px] sm:text-lg font-bold tracking-widest break-all text-ig-blue">${codeText}</span>
+                            </div>
+                            <button onclick="copyDMCLABE(this, '${codeText}')" class="bg-ig-blue hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-[14px] w-full transition-colors flex items-center justify-center gap-2 mb-3 active:scale-95">
+                                <i class="fa-regular fa-copy"></i> COPIAR CLABE
+                            </button>
+                            <div id="dm-payment-status" class="bg-blue-500/10 text-blue-400 text-[12px] py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 font-medium border border-blue-500/20 text-center">
+                                <i class="fa-solid fa-spinner fa-spin"></i> Esperando confirmación...
+                            </div>
+                        </div>
+                    </div>
+                `;
+                chat.insertAdjacentHTML('beforeend', clabeBubble);
+                scrollToBottom();
+                isBotTyping = false;
+
+                if (txId) {
+                    startDMPaymentPolling(txId, 'dm-payment-status');
+                }
+            } catch (error) {
+                removeTypingIndicator();
+                isBotTyping = false;
+            }
+        }
+
+        function copyDMCLABE(btn, code) {
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> ¡COPIADO!';
+                btn.classList.remove('bg-ig-blue', 'hover:bg-blue-600');
+                btn.classList.add('bg-green-600', 'hover:bg-green-700');
+                showToast("CLABE copiada al portapapeles");
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    btn.classList.add('bg-ig-blue', 'hover:bg-blue-600');
+                }, 2000);
+            });
+        }
+
+        function copyCLABE() {
+            const code = document.getElementById('clabe-code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                showToast("CLABE copiada al portapapeles");
+            });
+        }
+
         function startPaymentPolling(txId) {
             const statusEl = document.getElementById('payment-status');
             pollingInterval = setInterval(async () => {
@@ -1322,6 +1397,29 @@
             }, 4000); 
         }
 
+        function startDMPaymentPolling(txId, statusElId) {
+            const statusEl = document.getElementById(statusElId);
+            const dmPolling = setInterval(async () => {
+                try {
+                    const response = await fetch(`${BASE_URL}/api/pix/status/${txId}`, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json', 'x-api-key': API_TOKEN }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.status === 'paid') {
+                            clearInterval(dmPolling);
+                            if (statusEl) {
+                                statusEl.innerHTML = '<span class="text-green-400 font-bold"><i class="fa-solid fa-check"></i> ¡Pago confirmado!</span>';
+                                statusEl.className = "bg-green-500/10 text-green-400 text-[12px] py-2 px-2 rounded-lg border border-green-500/20 text-center";
+                            }
+                            appendBotMessage("¡Listo mi amor! ❤️ Pago confirmado con éxito. Escríbeme ahora mismo a mi WhatsApp para enviarte todo: <br><br><a href='https://wa.me/' target='_blank' class='text-ig-blue underline font-bold'>👉 CLIC AQUÍ PARA ABRIR WHATSAPP</a>");
+                        }
+                    }
+                } catch (e) {}
+            }, 4000);
+        }
+
         function closeModal(modalId) {
             isModalOpen = false;
             closeCheckoutSilent();
@@ -1337,64 +1435,6 @@
                 modal.classList.add('hidden');
                 document.body.style.overflow = '';
             }, 300);
-        }
-
-        async function generateSPEIForDownsell() {
-            showTypingIndicator();
-            try {
-                const response = await fetch(`${BASE_URL}/api/pix/generate`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_TOKEN },
-                    body: JSON.stringify({
-                        click_id: currentClickId,
-                        value_cents: 6000,
-                        product: { name: "Downsell DM 60" },
-                        currency: 'MXN'
-                    })
-                });
-
-                removeTypingIndicator();
-                let codeText = "646180111234567890";
-                let txId = null;
-
-                if (response.ok) {
-                    const data = await response.json();
-                    codeText = data.qr_code_text || codeText;
-                    txId = data.transaction_id || data.id;
-                }
-
-                const chat = document.getElementById('chat-messages');
-                const clabeBubble = `
-                    <div class="flex gap-2 fade-in mt-1 mb-4">
-                        <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
-                        <div class="bg-[#262626] text-white text-[15px] py-3 px-4 rounded-3xl rounded-tl-sm border border-[#363636] max-w-[85%] w-full shadow-lg">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase animate-pulse">PROMO $60 MXN</span>
-                            </div>
-                            <p class="text-[14px] text-gray-300 mb-3 leading-snug">🏦 Banco: <strong class="text-white">STP (Sistema de Transferencia y Pagos)</strong><br>💠 Nombre: <strong class="text-white">Camila Fagundes</strong><br>🔑 CLABE 👇</p>
-                            <div class="bg-black rounded-lg p-3 text-center mb-3 border border-[#363636]">
-                                <span class="font-mono text-[16px] sm:text-lg font-bold tracking-widest break-all text-ig-blue">${codeText}</span>
-                            </div>
-                            <button onclick="copyDMCLABE(this, '${codeText}')" class="bg-ig-blue hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-[14px] w-full transition-colors flex items-center justify-center gap-2 mb-3 active:scale-95">
-                                <i class="fa-regular fa-copy"></i> COPIAR CLABE
-                            </button>
-                            <div id="dm-payment-status-downsell" class="bg-yellow-500/10 text-yellow-500 text-[12px] py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 font-medium border border-yellow-500/20 text-center">
-                                <i class="fa-solid fa-spinner fa-spin"></i> Esperando confirmación...
-                            </div>
-                        </div>
-                    </div>
-                `;
-                chat.insertAdjacentHTML('beforeend', clabeBubble);
-                scrollToBottom();
-                isBotTyping = false;
-
-                if (txId) {
-                    startDMPaymentPolling(txId, 'dm-payment-status-downsell');
-                }
-            } catch (error) {
-                removeTypingIndicator();
-                isBotTyping = false;
-            }
         }
     </script>
 </body>
