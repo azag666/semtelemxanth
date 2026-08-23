@@ -301,8 +301,9 @@
     <!-- ========================================== -->
     <!-- VISTA 3: DIRECT MESSAGE (DM) SIMULATION    -->
     <!-- ========================================== -->
-    <div id="vista-dm" class="hidden flex-col min-h-screen bg-ig-bg w-full fixed inset-0 z-[55]">
-        <header class="sticky top-0 bg-ig-bg border-b border-ig-border z-40 px-4 h-14 flex justify-between items-center w-full max-w-md mx-auto">
+    <!-- MUDANÇA ESTRUTURAL AQUI: h-[100dvh] e overflow-hidden garantem que o teclado empurre o layout -->
+    <div id="vista-dm" class="hidden flex-col h-[100dvh] bg-ig-bg w-full fixed inset-0 z-[55] overflow-hidden">
+        <header class="shrink-0 bg-ig-bg border-b border-ig-border z-40 px-4 h-14 flex justify-between items-center w-full max-w-md mx-auto">
             <div class="flex items-center gap-4 cursor-pointer" onclick="closeDM()">
                 <i class="fa-solid fa-arrow-left text-2xl text-white"></i>
                 <div class="flex items-center gap-3">
@@ -319,8 +320,8 @@
             </div>
         </header>
         
-        <!-- Contêiner principal com padding dinâmico via style inline para sincronizar perfeitamente com teclado -->
-        <main id="chat-main-container" class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto transition-[padding-bottom] duration-300 ease-out" style="padding-bottom: 80px;">
+        <!-- O container principal é empurrado NATIVAMENTE pela barra inferior no modo flex -->
+        <main id="chat-main-container" class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto scroll-smooth">
             <div class="flex flex-col items-center justify-center mb-8 mt-4">
                 <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-24 h-24 rounded-full mb-3 object-cover">
                 <span class="text-white font-bold text-xl">Camila 💋✨</span>
@@ -329,10 +330,12 @@
                 <button onclick="closeDM()" class="bg-[#363636] text-white font-semibold py-1.5 px-4 rounded-lg text-sm mt-4 hover:bg-[#262626]">Ver perfil</button>
             </div>
             <div id="chat-messages" class="flex flex-col gap-3"></div>
+            <!-- Respiro natural no final -->
+            <div class="h-2 shrink-0"></div>
         </main>
 
-        <!-- WRAPPER DO INPUT E TECLADO CUSTOMIZADO -->
-        <div class="fixed bottom-0 w-full max-w-md left-1/2 -translate-x-1/2 bg-[#000] z-40 border-t border-ig-border shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
+        <!-- WRAPPER DO INPUT E TECLADO CUSTOMIZADO (Fora do container de scroll, faz parte do Flex Layout) -->
+        <div class="shrink-0 w-full max-w-md mx-auto bg-[#000] z-40 border-t border-ig-border shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
             
             <!-- Barra de Input -->
             <div class="p-3 bg-ig-bg">
@@ -349,7 +352,7 @@
             </div>
             
             <!-- TECLADO CUSTOMIZADO (iOS Style) -->
-            <div id="custom-keyboard" class="h-0 overflow-hidden transition-all duration-300 ease-out bg-[#1c1c1e] flex flex-col justify-end w-full select-none">
+            <div id="custom-keyboard" class="h-0 overflow-hidden transition-[height] duration-300 ease-out bg-[#1c1c1e] flex flex-col justify-end w-full select-none">
                 <div class="p-2 pb-6 flex flex-col gap-2.5">
                     <!-- Row 1 -->
                     <div class="flex justify-center gap-1.5 w-full">
@@ -762,10 +765,10 @@
             kb.classList.remove('h-0');
             kb.classList.add('h-[260px]');
             
+            // Faz a área de chat "encolher" na mesma medida do teclado
             const chatMain = document.getElementById('chat-main-container');
-            chatMain.style.paddingBottom = '340px';
             
-            // Faz o scroll acompanhar a animação de abertura do teclado (350ms)
+            // Loop a 60fps para o scroll acompanhar perfeitamente a animação css do teclado (300ms)
             let start = Date.now();
             function scrollStep() {
                 scrollToBottom();
@@ -781,8 +784,14 @@
             kb.classList.add('h-0');
             kb.classList.remove('h-[260px]');
             
-            const chatMain = document.getElementById('chat-main-container');
-            chatMain.style.paddingBottom = '80px';
+            let start = Date.now();
+            function scrollStep() {
+                scrollToBottom();
+                if(Date.now() - start < 350) {
+                    requestAnimationFrame(scrollStep);
+                }
+            }
+            scrollStep();
         }
 
         // Esconde o teclado ao clicar fora
