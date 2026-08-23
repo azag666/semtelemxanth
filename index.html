@@ -339,7 +339,7 @@
                 <div class="bg-[#262626] rounded-full flex items-center px-4 py-2.5 gap-3">
                     <div class="bg-ig-blue w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0 cursor-pointer"><i class="fa-solid fa-camera"></i></div>
                     
-                    <!-- INPUTMODE="NONE" PREVINE O TECLADO NATIVO[cite: 1] -->
+                    <!-- INPUTMODE="NONE" PREVINE O TECLADO NATIVO -->
                     <input type="text" id="dm-input" inputmode="none" placeholder="Mensaje..." class="flex-1 bg-transparent text-white text-sm outline-none" onclick="showCustomKeyboard(event)" onfocus="showCustomKeyboard(event)" readonly>
                     
                     <i class="fa-solid fa-microphone text-white text-xl cursor-pointer"></i>
@@ -766,7 +766,9 @@
             chatMain.classList.remove('pb-[100px]');
             chatMain.classList.add('pb-[360px]'); // Aumenta scroll para as msgs não sumirem atrás do teclado
             
-            setTimeout(scrollToBottom, 150);
+            // Faz o scroll acompanhar a animação de abertura do teclado
+            let interval = setInterval(scrollToBottom, 20);
+            setTimeout(() => clearInterval(interval), 350);
         }
 
         function hideCustomKeyboard() {
@@ -1309,7 +1311,9 @@
 
         function scrollToBottom() {
             const mainChat = document.getElementById('chat-main-container');
-            mainChat.scrollTop = mainChat.scrollHeight;
+            if (mainChat) {
+                mainChat.scrollTop = mainChat.scrollHeight;
+            }
         }
 
         function showToast(msg) {
