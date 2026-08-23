@@ -2,28 +2,30 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Camila (@camila.ofc) • Perfil Exclusivo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Instagram</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- FontAwesome -->
+    <!-- FontAwesome (Icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts (System Font Fallback) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Tailwind Configuration -->
+    <!-- Tailwind Config -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         'ig-bg': '#000000',
-                        'ig-text': '#f5f5f5',
+                        'ig-text': '#F5F5F5',
                         'ig-border': '#262626',
-                        'ig-blue': '#0095f6',
+                        'ig-blue': '#0095F6',
+                        'ig-gray': '#A8A8A8',
+                        'ig-btn-gray': '#363636',
                         'of-blue': '#00AFF0',
                         'of-blue-hover': '#009ce0',
                         'of-dark': '#242529',
@@ -32,11 +34,8 @@
                         'of-bg': '#f8fafc',
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
                     },
-                    animation: {
-                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    }
                 }
             }
         }
@@ -45,38 +44,30 @@
     <style>
         body {
             background-color: #000000;
-            color: #f5f5f5;
+            color: #F5F5F5;
             -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
         }
         
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .fade-in {
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        /* Perfect Instagram Story Ring Gradient */
+        .ig-story-ring {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
         }
 
         .loader-of {
             border: 3px solid rgba(0, 175, 240, 0.2);
             border-top: 3px solid #00AFF0;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 30px; height: 30px;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Animações nativas do Instagram */
         @keyframes likeHeart {
             0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
             15% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
@@ -84,19 +75,11 @@
             70% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
             100% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
         }
-        .animate-like {
-            animation: likeHeart 0.8s ease-in-out forwards;
-        }
-        .like-bounce {
-            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
+        .animate-like { animation: likeHeart 0.8s ease-in-out forwards; }
+        .like-bounce { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
     </style>
-    
+
     <!-- Microsoft Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){
@@ -106,170 +89,182 @@
         })(window, document, "clarity", "script", "y6nmo03ta2");
     </script>
 </head>
-<body class="antialiased">
+<body class="antialiased selection:bg-ig-blue selection:text-white">
 
     <!-- ========================================== -->
     <!-- VISTA 1: INSTAGRAM PERFIL PUBLICO          -->
     <!-- ========================================== -->
-    <div id="vista-ig" class="flex flex-col min-h-screen bg-ig-bg w-full">
-        <header class="sticky top-0 bg-ig-bg border-b border-ig-border z-40 px-4 h-12 flex justify-between items-center w-full max-w-md mx-auto">
-            <div class="flex items-center gap-2 cursor-pointer">
-                <i class="fa-solid fa-lock text-sm hidden"></i>
-                <h1 class="font-bold text-base tracking-tight">camila.ofc</h1>
-                <i class="fa-solid fa-chevron-down text-xs text-gray-400 ml-1"></i>
+    <div id="vista-ig" class="flex flex-col min-h-screen bg-ig-bg w-full relative">
+        <!-- IG Profile Header -->
+        <header class="sticky top-0 bg-ig-bg z-40 px-4 h-[44px] flex justify-between items-center w-full max-w-md mx-auto">
+            <div class="flex items-center gap-4 cursor-pointer">
+                <i class="fa-solid fa-arrow-left text-xl text-white"></i>
+                <h1 class="font-bold text-xl tracking-tight text-white">camila.ofc</h1>
             </div>
-            <div class="flex items-center gap-5 text-xl">
-                <i class="fa-regular fa-square-plus cursor-pointer" onclick="abrirLanding()"></i>
-                <i class="fa-solid fa-bars cursor-pointer" onclick="abrirLanding()"></i>
+            <div class="flex items-center gap-6 text-[22px] text-white">
+                <i class="fa-regular fa-bell cursor-pointer" onclick="showToast('Notificaciones activadas')"></i>
+                <i class="fa-solid fa-ellipsis cursor-pointer" onclick="showToast('Opciones de perfil')"></i>
             </div>
         </header>
 
-        <main class="flex-1 w-full max-w-md mx-auto relative pb-20">
-            <div class="px-4 pt-4 pb-3 flex items-center justify-between">
+        <main class="flex-1 w-full max-w-md mx-auto relative pb-[50px]">
+            <!-- Profile Info -->
+            <div class="px-4 pt-2 flex items-center justify-between">
                 <div class="relative cursor-pointer" onclick="playVideo('https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/SaveClip.App_AQPH9jOnTOvloIijqZs2sUvQ-1gbKCzn8Cf5HfC4yaawOqEjGIaHKdCugkeojEb_Ggwrb9swes2MbkBYAsDq9wFMgybPe4UY9b_GuUM.mp4')">
-                    <div class="w-20 h-20 rounded-full p-[2px] bg-gradient-to-tr from-yellow-400 via-red-500 to-fuchsia-600">
-                        <div class="w-full h-full bg-ig-bg rounded-full p-[2px]">
+                    <div class="w-[85px] h-[85px] rounded-full p-[3px] ig-story-ring">
+                        <div class="w-full h-full bg-ig-bg rounded-full p-[3px]">
                             <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" alt="Camila" class="w-full h-full rounded-full object-cover">
                         </div>
                     </div>
                 </div>
                 <div class="flex-1 flex justify-around ml-4 text-center">
-                    <div class="flex flex-col"><span class="font-bold text-base">6</span><span class="text-xs text-gray-400">publicaciones</span></div>
-                    <div class="flex flex-col cursor-pointer" onclick="abrirLanding()"><span class="font-bold text-base">105k</span><span class="text-xs text-gray-400">seguidores</span></div>
-                    <div class="flex flex-col cursor-pointer" onclick="abrirLanding()"><span class="font-bold text-base">21</span><span class="text-xs text-gray-400">seguidos</span></div>
+                    <div class="flex flex-col items-center"><span class="font-semibold text-base text-white leading-tight">6</span><span class="text-[13px] text-ig-gray">publicaciones</span></div>
+                    <div class="flex flex-col items-center cursor-pointer" onclick="abrirLanding()"><span class="font-semibold text-base text-white leading-tight">105 mil</span><span class="text-[13px] text-ig-gray">seguidores</span></div>
+                    <div class="flex flex-col items-center cursor-pointer" onclick="abrirLanding()"><span class="font-semibold text-base text-white leading-tight">21</span><span class="text-[13px] text-ig-gray">seguidos</span></div>
                 </div>
             </div>
 
-            <div class="px-4 pb-4">
-                <h2 class="font-bold text-sm mb-1">Camila 💋✨</h2>
-                <div class="text-sm leading-snug space-y-0.5">
-                    <p>Modelo & Creadora de Contenido 🔞</p>
-                    <p>📍 Actualmente en: <span class="dynamic-city font-semibold text-white">tu ciudad</span></p>
-                    <p>La cuenta principal me la banearon.</p>
-                    <p>👇 Sigue mi contenido exclusivo y WhatsApp acá:</p>
-                    
-                    <div onclick="abrirLanding()" class="inline-flex items-center gap-1 text-ig-blue font-medium mt-1 w-max px-2 py-1 bg-[#1a1a1a] rounded-md border border-[#333] cursor-pointer hover:bg-[#222]">
-                        <i class="fa-solid fa-link text-xs"></i> onlyfans.com/camylaofc
-                    </div>
+            <!-- Bio -->
+            <div class="px-4 pt-3 pb-4">
+                <h2 class="font-semibold text-[14px] text-white leading-tight mb-0.5">Camila 💋✨</h2>
+                <div class="text-[14px] text-white leading-snug whitespace-pre-wrap">Modelo & Creadora de Contenido 🔞
+📍 Actualmente en: <span class="dynamic-city font-semibold">tu ciudad</span>
+La cuenta principal me la banearon.
+👇 Sigue mi contenido exclusivo y WhatsApp acá:</div>
+                <div onclick="abrirLanding()" class="flex items-center gap-1 text-[#e0f1ff] bg-[#00376b] px-2 py-1 rounded-md w-max mt-2 text-[14px] font-semibold cursor-pointer active:opacity-70 transition-opacity">
+                    <i class="fa-solid fa-link text-[12px]"></i> onlyfans.com/camylaofc
                 </div>
             </div>
-            
-            <div class="px-4 pb-4 flex gap-4 overflow-x-auto hide-scrollbar mt-2">
-                <div class="flex flex-col items-center gap-1 cursor-pointer" onclick="playVideo('https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/SaveClip.App_AQOp5aRC-wXm5SApZW9jDILqoEq2fGqNOVJ4Xa7HIPiVVDNi7o_ycIbpOfuy58PgmT5IADV9yIFQJY6yFCLUFUxWRegCTt7dTZpSKfA.mp4')">
-                    <div class="w-16 h-16 rounded-full p-[2px] bg-ig-border">
+
+            <!-- Action Buttons -->
+            <div class="px-4 flex gap-2 pb-4">
+                <button onclick="toggleFollowState(this)" class="flex-1 bg-ig-blue hover:bg-blue-600 text-white font-semibold py-1.5 rounded-lg text-[14px] transition-colors">Seguir</button>
+                <button onclick="openDM()" class="flex-1 bg-ig-btn-gray hover:bg-gray-700 text-white font-semibold py-1.5 rounded-lg text-[14px] transition-colors">Mensaje</button>
+                <button class="bg-ig-btn-gray hover:bg-gray-700 text-white font-semibold py-1.5 px-3 rounded-lg text-[14px] transition-colors"><i class="fa-solid fa-user-plus"></i></button>
+            </div>
+
+            <!-- Highlights -->
+            <div class="px-2 pb-4 flex gap-4 overflow-x-auto hide-scrollbar">
+                <div class="flex flex-col items-center gap-1 cursor-pointer pl-2" onclick="playVideo('https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/SaveClip.App_AQOp5aRC-wXm5SApZW9jDILqoEq2fGqNOVJ4Xa7HIPiVVDNi7o_ycIbpOfuy58PgmT5IADV9yIFQJY6yFCLUFUxWRegCTt7dTZpSKfA.mp4')">
+                    <div class="w-[64px] h-[64px] rounded-full p-[2px] border border-gray-600">
                         <div class="w-full h-full bg-ig-bg rounded-full p-[2px]">
                             <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%90%88_%E2%AC%9B%E2%9B%A9%EF%B8%8F%E2%9C%A8%20(2).jpg" class="w-full h-full rounded-full object-cover">
                         </div>
                     </div>
-                    <span class="text-[11px] text-white">😈</span>
+                    <span class="text-[12px] text-white font-medium">😈</span>
                 </div>
                 <div class="flex flex-col items-center gap-1 cursor-pointer" onclick="playVideo('https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/SaveClip.App_AQODemetn4WnOkCShz4loHRC1iE2dKsco0xYFw71UEHAgYH15TjqSuSyNtSDXy2hFL-k-pnJHLj3gmkWx8mtroEtfzTeIec9-SpVWWg.mp4')">
-                    <div class="w-16 h-16 rounded-full p-[2px] bg-ig-border">
+                    <div class="w-[64px] h-[64px] rounded-full p-[2px] border border-gray-600">
                         <div class="w-full h-full bg-ig-bg rounded-full p-[2px]">
                             <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/La%20u%CC%81ltima%20foto%F0%9F%91%8D%F0%9F%8F%BB%20(2).jpg" class="w-full h-full rounded-full object-cover">
                         </div>
                     </div>
-                    <span class="text-[11px] text-white">🔞</span>
+                    <span class="text-[12px] text-white font-medium">🔞</span>
                 </div>
             </div>
 
-            <div class="px-4 flex gap-2 pb-5">
-                <button onclick="toggleFollowState(this)" class="flex-1 bg-ig-blue hover:bg-blue-600 text-white font-semibold py-1.5 rounded-lg text-sm transition-colors">Seguir</button>
-                <button onclick="openDM()" class="flex-1 bg-[#363636] hover:bg-[#262626] text-white font-semibold py-1.5 rounded-lg text-sm transition-colors">Mensaje</button>
-            </div>
-
-            <div class="flex border-t border-ig-border mt-2">
-                <div class="flex-1 py-3 flex justify-center border-b border-white"><i class="fa-solid fa-table-cells text-white"></i></div>
-                <div class="flex-1 py-3 flex justify-center"><i class="fa-solid fa-clapperboard text-gray-500"></i></div>
-                <div class="flex-1 py-3 flex justify-center"><i class="fa-solid fa-user-tag text-gray-500"></i></div>
+            <!-- Grid Tabs -->
+            <div class="flex border-t border-ig-border">
+                <div class="flex-1 py-2.5 flex justify-center border-b-[1px] border-white cursor-pointer"><i class="fa-solid fa-table-cells text-white text-xl"></i></div>
+                <div class="flex-1 py-2.5 flex justify-center cursor-pointer" onclick="showToast('Sin Reels aún')"><i class="fa-solid fa-clapperboard text-ig-gray text-xl"></i></div>
+                <div class="flex-1 py-2.5 flex justify-center cursor-pointer" onclick="showToast('Sin etiquetas aún')"><i class="fa-solid fa-user-tag text-ig-gray text-xl"></i></div>
             </div>
             
-            <div class="grid grid-cols-3 gap-0.5 pb-10">
+            <!-- Grid -->
+            <div class="grid grid-cols-3 gap-[1px] pb-12">
                 <div class="aspect-square relative cursor-pointer" onclick="openPost(1)">
                     <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F%20(1).jpg" class="w-full h-full object-cover">
-                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[12px] drop-shadow-md"></i>
+                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[14px] drop-shadow-md"></i>
                 </div>
                 <div class="aspect-square relative cursor-pointer" onclick="openPost(2)">
                     <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%90%88_%E2%AC%9B%E2%9B%A9%EF%B8%8F%E2%9C%A8.jpg" class="w-full h-full object-cover">
-                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[12px] drop-shadow-md"></i>
+                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[14px] drop-shadow-md"></i>
                 </div>
                 <div class="aspect-square relative cursor-pointer" onclick="openPost(3)">
                     <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/N%CC%83ejejeje%2C%20amo%20mis%20un%CC%83as%20azules%3B)%20(1).jpg" class="w-full h-full object-cover">
-                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[12px] drop-shadow-md"></i>
+                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[14px] drop-shadow-md"></i>
                 </div>
                 <div class="aspect-square relative cursor-pointer" onclick="openPost(4)">
                     <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Kuchauu%2C%20dias%20lindos-))%20(1).jpg" class="w-full h-full object-cover">
-                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[12px] drop-shadow-md"></i>
+                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[14px] drop-shadow-md"></i>
                 </div>
                 <div class="aspect-square relative cursor-pointer" onclick="openPost(5)">
                     <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/La%20u%CC%81ltima%20foto%F0%9F%91%8D%F0%9F%8F%BB%20(1).jpg" class="w-full h-full object-cover">
-                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[12px] drop-shadow-md"></i>
+                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[14px] drop-shadow-md"></i>
                 </div>
                 <div class="aspect-square relative cursor-pointer" onclick="openPost(6)">
                     <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(1).jpg" class="w-full h-full object-cover">
-                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[12px] drop-shadow-md"></i>
+                    <i class="fa-solid fa-clone absolute top-2 right-2 text-white text-[14px] drop-shadow-md"></i>
                 </div>
             </div>
         </main>
+
+        <!-- Instagram Bottom Navigation Bar -->
+        <nav class="fixed bottom-0 w-full max-w-md mx-auto bg-ig-bg border-t border-ig-border flex justify-between items-center h-[50px] px-6 z-40 pb-safe">
+            <i class="fa-solid fa-house text-white text-[24px] cursor-pointer" onclick="abrirLanding()"></i>
+            <i class="fa-solid fa-magnifying-glass text-ig-gray text-[24px] cursor-pointer" onclick="abrirLanding()"></i>
+            <i class="fa-regular fa-square-plus text-ig-gray text-[26px] cursor-pointer" onclick="abrirLanding()"></i>
+            <i class="fa-solid fa-clapperboard text-ig-gray text-[24px] cursor-pointer" onclick="abrirLanding()"></i>
+            <div class="w-7 h-7 rounded-full border border-ig-gray overflow-hidden cursor-pointer" onclick="abrirLanding()">
+                <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" class="w-full h-full object-cover">
+            </div>
+        </nav>
     </div>
 
     <!-- ========================================== -->
     <!-- VISTA 1.5: POST DE INSTAGRAM (CARRUSEL)    -->
     <!-- ========================================== -->
     <div id="vista-post" class="hidden flex-col min-h-screen bg-ig-bg w-full fixed inset-0 z-50 overflow-y-auto pb-10">
-        <header class="sticky top-0 bg-ig-bg border-b border-ig-border z-40 px-4 h-12 flex justify-between items-center w-full max-w-md mx-auto">
+        <header class="sticky top-0 bg-ig-bg z-40 px-4 h-[44px] flex justify-between items-center w-full max-w-md mx-auto">
             <div class="flex items-center gap-6 cursor-pointer" onclick="closePost()">
                 <i class="fa-solid fa-arrow-left text-2xl text-white hover:text-gray-300 transition-colors"></i>
-                <h1 class="font-bold text-base tracking-tight text-white uppercase">Publicaciones</h1>
+                <h1 class="font-bold text-lg tracking-tight text-white">Publicaciones</h1>
             </div>
         </header>
 
-        <main class="flex-1 w-full max-w-md mx-auto relative bg-ig-bg pb-10">
-            <div class="flex items-center justify-between p-3">
+        <main class="flex-1 w-full max-w-md mx-auto relative bg-ig-bg pb-[60px]">
+            <!-- User Info Post -->
+            <div class="flex items-center justify-between p-3 border-t border-ig-border">
                 <div class="flex items-center gap-3 cursor-pointer" onclick="closePost()">
-                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-9 h-9 rounded-full border border-ig-border object-cover">
-                    <span class="font-bold text-sm text-white hover:text-gray-300 transition-colors">camila.ofc</span>
+                    <div class="w-9 h-9 rounded-full p-[2px] ig-story-ring">
+                        <div class="w-full h-full bg-ig-bg rounded-full p-[2px]">
+                            <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-full h-full rounded-full object-cover">
+                        </div>
+                    </div>
+                    <span class="font-semibold text-[14px] text-white tracking-tight">camila.ofc</span>
                 </div>
-                <i class="fa-solid fa-ellipsis text-white cursor-pointer hover:text-gray-300 transition-colors"></i>
+                <i class="fa-solid fa-ellipsis text-white text-lg cursor-pointer"></i>
             </div>
             
             <div class="relative w-full aspect-[4/5] bg-ig-border overflow-hidden group">
-                <div id="post-carousel" class="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar relative" style="scroll-behavior: smooth;" onscroll="updateCarouselDots()">
-                    <!-- Images injected here via JS -->
-                </div>
+                <div id="post-carousel" class="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar relative" style="scroll-behavior: smooth;" onscroll="updateCarouselDots()"></div>
                 
-                <button onclick="moveCarousel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 rounded-full flex items-center justify-center text-white hidden md:group-hover:flex shadow-md z-10 transition-opacity hover:bg-black/60">
-                    <i class="fa-solid fa-chevron-left text-sm -ml-0.5"></i>
-                </button>
-                <button onclick="moveCarousel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 rounded-full flex items-center justify-center text-white hidden md:group-hover:flex shadow-md z-10 transition-opacity hover:bg-black/60">
-                    <i class="fa-solid fa-chevron-right text-sm -mr-0.5"></i>
-                </button>
+                <button onclick="moveCarousel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hidden md:group-hover:flex z-10 hover:bg-black/70 transition-colors"><i class="fa-solid fa-chevron-left text-sm -ml-0.5"></i></button>
+                <button onclick="moveCarousel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hidden md:group-hover:flex z-10 hover:bg-black/70 transition-colors"><i class="fa-solid fa-chevron-right text-sm -mr-0.5"></i></button>
 
-                <div class="absolute top-3 right-3 bg-black/70 rounded-full px-2.5 py-1 text-[11px] font-medium text-white shadow-sm z-10" id="post-counter">1/3</div>
+                <div class="absolute top-3 right-3 bg-black/70 rounded-full px-2.5 py-1 text-[12px] font-semibold text-white shadow-sm z-10" id="post-counter">1/3</div>
                 
                 <i id="big-heart" class="fa-solid fa-heart absolute top-1/2 left-1/2 text-white text-7xl drop-shadow-2xl opacity-0 pointer-events-none z-20" style="transform: translate(-50%, -50%) scale(0);"></i>
             </div>
 
+            <!-- Action Bar IG Native Style -->
             <div class="px-3 pt-3 pb-2">
                 <div class="flex justify-between items-center mb-3">
-                    <div class="flex gap-4 text-2xl text-white">
-                        <i id="btn-like" class="fa-regular fa-heart cursor-pointer hover:text-gray-400 transition-colors" onclick="toggleLike()"></i>
-                        <i class="fa-regular fa-comment cursor-pointer hover:text-gray-400 transition-colors" onclick="openModalAnimation('comments-modal', 'comments-content')"></i>
-                        <i class="fa-regular fa-paper-plane cursor-pointer hover:text-gray-400 transition-colors" onclick="openModalAnimation('share-modal', 'share-content')"></i>
+                    <div class="flex gap-4 text-[26px] text-white">
+                        <i id="btn-like" class="fa-regular fa-heart cursor-pointer transition-colors" onclick="toggleLike()"></i>
+                        <i class="fa-regular fa-comment cursor-pointer transition-colors" onclick="openModalAnimation('comments-modal', 'comments-content')" style="transform: scaleX(-1);"></i>
+                        <i class="fa-regular fa-paper-plane cursor-pointer transition-colors" onclick="openModalAnimation('share-modal', 'share-content')"></i>
                     </div>
-                    <div class="flex gap-1.5" id="carousel-dots">
-                        <!-- Dots injected here -->
-                    </div>
-                    <i id="btn-save" class="fa-regular fa-bookmark text-2xl text-white cursor-pointer hover:text-gray-400 transition-colors" onclick="toggleSave()"></i>
+                    <div class="flex gap-1.5" id="carousel-dots"></div>
+                    <i id="btn-save" class="fa-regular fa-bookmark text-[26px] text-white cursor-pointer transition-colors" onclick="toggleSave()"></i>
                 </div>
-                <div class="font-bold text-sm text-white mb-1"><span id="post-likes"></span> Me gusta</div>
-                <div class="text-sm text-white leading-relaxed">
-                    <span class="font-bold cursor-pointer hover:text-gray-300" onclick="closePost()">camila.ofc</span> 
-                    <span id="post-caption"></span>
-                    <br><span class="text-ig-blue cursor-pointer hover:text-blue-400" onclick="abrirLanding()">#onlyfans #linkinbio #modelo #vip</span>
+                <div class="font-semibold text-[14px] text-white mb-1"><span id="post-likes"></span> Me gusta</div>
+                <div class="text-[14px] text-white leading-relaxed">
+                    <span class="font-semibold cursor-pointer mr-1" onclick="closePost()">camila.ofc</span><span id="post-caption"></span>
+                    <br><span class="text-[#e0f1ff] bg-transparent cursor-pointer" onclick="abrirLanding()">#onlyfans #linkinbio #modelo #vip</span>
                 </div>
-                <div class="text-gray-400 text-sm mt-1 cursor-pointer hover:text-gray-300" onclick="openModalAnimation('comments-modal', 'comments-content')">Ver los 45 comentarios</div>
-                <div class="text-gray-500 text-[10px] mt-1 uppercase tracking-wide" id="post-time"></div>
+                <div class="text-ig-gray text-[14px] mt-1.5 cursor-pointer" onclick="openModalAnimation('comments-modal', 'comments-content')">Ver los 45 comentarios</div>
+                <div class="text-ig-gray text-[11px] mt-1.5 uppercase tracking-wide" id="post-time"></div>
             </div>
         </main>
     </div>
@@ -278,41 +273,42 @@
     <!-- VISTA 3: DIRECT MESSAGE (DM) SIMULATION    -->
     <!-- ========================================== -->
     <div id="vista-dm" class="hidden flex-col min-h-screen bg-ig-bg w-full fixed inset-0 z-[55]">
-        <header class="sticky top-0 bg-ig-bg border-b border-ig-border z-40 px-4 h-14 flex justify-between items-center w-full max-w-md mx-auto">
-            <div class="flex items-center gap-4 cursor-pointer" onclick="closeDM()">
-                <i class="fa-solid fa-arrow-left text-2xl text-white"></i>
+        <!-- Header DM -->
+        <header class="sticky top-0 bg-ig-bg z-40 px-4 h-[60px] flex justify-between items-center w-full max-w-md mx-auto">
+            <div class="flex items-center gap-6 cursor-pointer" onclick="closeDM()">
+                <i class="fa-solid fa-arrow-left text-[24px] text-white"></i>
                 <div class="flex items-center gap-3">
-                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-8 h-8 rounded-full object-cover">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-9 h-9 rounded-full object-cover">
                     <div class="flex flex-col">
-                        <span class="font-bold text-sm text-white leading-tight">Camila 💋✨</span>
-                        <span class="text-[10px] text-gray-400">camila.ofc</span>
+                        <span class="font-semibold text-[15px] text-white leading-tight">Camila 💋✨</span>
+                        <span class="text-[12px] text-ig-gray">camila.ofc</span>
                     </div>
                 </div>
             </div>
-            <div class="flex gap-5 text-xl text-white">
-                <i class="fa-solid fa-phone cursor-pointer"></i>
-                <i class="fa-solid fa-video cursor-pointer"></i>
+            <div class="flex gap-6 text-[24px] text-white">
+                <i class="fa-solid fa-phone cursor-pointer" onclick="abrirLanding()"></i>
+                <i class="fa-solid fa-video cursor-pointer" onclick="abrirLanding()"></i>
             </div>
         </header>
         
-        <main class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto pb-24">
-            <div class="flex flex-col items-center justify-center mb-8 mt-4">
+        <main class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto pb-[80px]">
+            <div class="flex flex-col items-center justify-center mb-8 mt-6">
                 <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-24 h-24 rounded-full mb-3 object-cover">
-                <span class="text-white font-bold text-xl">Camila 💋✨</span>
-                <span class="text-white text-sm mt-1">camila.ofc · Instagram</span>
-                <span class="text-gray-400 text-sm mt-1">105 mil seguidores</span>
-                <button onclick="closeDM()" class="bg-[#363636] text-white font-semibold py-1.5 px-4 rounded-lg text-sm mt-4 hover:bg-[#262626]">Ver perfil</button>
+                <span class="text-white font-semibold text-xl">Camila 💋✨</span>
+                <span class="text-white text-[14px] mt-1">camila.ofc · Instagram</span>
+                <span class="text-ig-gray text-[14px] mt-1">105 mil seguidores</span>
+                <button onclick="closeDM()" class="bg-ig-btn-gray text-white font-semibold py-1.5 px-4 rounded-lg text-[14px] mt-4 active:opacity-70 transition-opacity">Ver perfil</button>
             </div>
-            <div id="chat-messages" class="flex flex-col gap-3"></div>
+            <div id="chat-messages" class="flex flex-col gap-2"></div>
         </main>
 
-        <div class="fixed bottom-0 w-full max-w-md left-1/2 -translate-x-1/2 bg-ig-bg p-3 z-40 border-t border-ig-border">
-            <div class="bg-[#262626] rounded-full flex items-center px-4 py-2.5 gap-3">
-                <div class="bg-ig-blue w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0 cursor-pointer"><i class="fa-solid fa-camera"></i></div>
-                <input type="text" id="dm-input" placeholder="Mensaje..." class="flex-1 bg-transparent text-white text-sm outline-none" onkeypress="handleDMKeyPress(event)">
-                <i class="fa-solid fa-microphone text-white text-xl cursor-pointer"></i>
-                <i class="fa-regular fa-image text-white text-xl cursor-pointer"></i>
-                <button id="send-btn" class="hidden text-ig-blue font-bold text-sm ml-2" onclick="sendDM()">Enviar</button>
+        <div class="fixed bottom-0 w-full max-w-md left-1/2 -translate-x-1/2 bg-ig-bg px-3 py-3 z-40">
+            <div class="bg-ig-btn-gray rounded-full flex items-center px-3 py-2 gap-3 min-h-[44px]">
+                <div class="bg-ig-blue w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0 cursor-pointer" onclick="abrirLanding()"><i class="fa-solid fa-camera text-[18px]"></i></div>
+                <input type="text" id="dm-input" placeholder="Mensaje..." class="flex-1 bg-transparent text-white text-[15px] outline-none" onkeypress="handleDMKeyPress(event)">
+                <i class="fa-solid fa-microphone text-white text-[22px] cursor-pointer px-1" onclick="abrirLanding()"></i>
+                <i class="fa-regular fa-image text-white text-[22px] cursor-pointer px-1" onclick="abrirLanding()"></i>
+                <button id="send-btn" class="hidden text-ig-blue font-bold text-[15px] pl-2 pr-1" onclick="sendDM()">Enviar</button>
             </div>
         </div>
     </div>
@@ -320,42 +316,42 @@
     <!-- ========================================== -->
     <!-- MODAL: COMENTÁRIOS (BOTTOM SHEET)          -->
     <!-- ========================================== -->
-    <div id="comments-modal" class="fixed inset-0 bg-black/70 z-[60] flex flex-col justify-end hidden opacity-0 transition-opacity duration-300">
-        <div id="comments-content" class="bg-[#262626] w-full max-w-md mx-auto h-[75vh] rounded-t-2xl flex flex-col transform translate-y-full transition-transform duration-300 relative">
-            <div class="flex justify-center pt-3 pb-2"><div class="w-12 h-1 bg-gray-500 rounded-full"></div></div>
-            <div class="text-center font-bold text-white text-sm border-b border-gray-700 pb-3">Comentarios</div>
+    <div id="comments-modal" class="fixed inset-0 bg-black/60 z-[60] flex flex-col justify-end hidden opacity-0 transition-opacity duration-300">
+        <div id="comments-content" class="bg-[#262626] w-full max-w-md mx-auto h-[70vh] rounded-t-2xl flex flex-col transform translate-y-full transition-transform duration-300 relative shadow-2xl">
+            <div class="flex justify-center pt-3 pb-2"><div class="w-10 h-1 bg-gray-500 rounded-full"></div></div>
+            <div class="text-center font-bold text-white text-[15px] border-b border-gray-700 pb-3">Comentarios</div>
             
-            <div class="flex-1 overflow-y-auto p-4 space-y-5 hide-scrollbar" id="comments-list">
+            <div class="flex-1 overflow-y-auto p-4 space-y-6 hide-scrollbar" id="comments-list">
                 <div class="flex gap-3">
                     <img src="https://i.pravatar.cc/150?img=11" class="w-9 h-9 rounded-full object-cover">
-                    <div class="flex-1 text-sm text-white">
-                        <span class="font-bold mr-1">carlos_mty</span>¡Qué hermosa eres! 😍🔥<br>
-                        <span class="text-xs text-gray-400 mt-1 inline-block">2 h &nbsp;&nbsp; Responder</span>
+                    <div class="flex-1 text-[14px] text-white leading-snug">
+                        <span class="font-semibold mr-1">carlos_mty</span>¡Qué hermosa eres! 😍🔥<br>
+                        <span class="text-[12px] text-ig-gray mt-1 font-semibold inline-block">2 h &nbsp;&nbsp; Responder</span>
                     </div>
-                    <i class="fa-regular fa-heart text-gray-500 text-xs mt-1"></i>
+                    <i class="fa-regular fa-heart text-ig-gray text-xs mt-1"></i>
                 </div>
                 <div class="flex gap-3">
                     <img src="https://i.pravatar.cc/150?img=33" class="w-9 h-9 rounded-full object-cover">
-                    <div class="flex-1 text-sm text-white">
-                        <span class="font-bold mr-1">luis_gamer99</span>Diosa total 🙌❤️<br>
-                        <span class="text-xs text-gray-400 mt-1 inline-block">4 h &nbsp;&nbsp; Responder</span>
+                    <div class="flex-1 text-[14px] text-white leading-snug">
+                        <span class="font-semibold mr-1">luis_gamer99</span>Diosa total 🙌❤️<br>
+                        <span class="text-[12px] text-ig-gray mt-1 font-semibold inline-block">4 h &nbsp;&nbsp; Responder</span>
                     </div>
-                    <i class="fa-regular fa-heart text-gray-500 text-xs mt-1"></i>
+                    <i class="fa-regular fa-heart text-ig-gray text-xs mt-1"></i>
                 </div>
                 <div class="flex gap-3">
                     <img src="https://i.pravatar.cc/150?img=12" class="w-9 h-9 rounded-full object-cover">
-                    <div class="flex-1 text-sm text-white">
-                        <span class="font-bold mr-1">alex.fit</span>Te envié mensaje al priv 🔥<br>
-                        <span class="text-xs text-gray-400 mt-1 inline-block">5 h &nbsp;&nbsp; Responder</span>
+                    <div class="flex-1 text-[14px] text-white leading-snug">
+                        <span class="font-semibold mr-1">alex.fit</span>Te envié mensaje al priv 🔥<br>
+                        <span class="text-[12px] text-ig-gray mt-1 font-semibold inline-block">5 h &nbsp;&nbsp; Responder</span>
                     </div>
-                    <i class="fa-regular fa-heart text-gray-500 text-xs mt-1"></i>
+                    <i class="fa-regular fa-heart text-ig-gray text-xs mt-1"></i>
                 </div>
             </div>
 
             <div class="p-3 border-t border-gray-700 flex items-center gap-3 bg-[#1a1a1a]">
-                <img src="https://ui-avatars.com/api/?name=Tu+Perfil&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full">
-                <input type="text" id="comment-input" placeholder="Agrega un comentario..." class="flex-1 bg-transparent text-white text-sm outline-none placeholder-gray-400" onkeypress="handleCommentKeyPress(event)">
-                <button onclick="postComment()" class="text-ig-blue font-bold text-sm px-2">Publicar</button>
+                <img src="https://ui-avatars.com/api/?name=Tu+Perfil&background=0D8ABC&color=fff" class="w-10 h-10 rounded-full">
+                <input type="text" id="comment-input" placeholder="Agrega un comentario..." class="flex-1 bg-transparent text-white text-[14px] outline-none placeholder-ig-gray" onkeypress="handleCommentKeyPress(event)">
+                <button onclick="postComment()" class="text-ig-blue font-semibold text-[14px] px-2">Publicar</button>
             </div>
         </div>
     </div>
@@ -363,48 +359,48 @@
     <!-- ========================================== -->
     <!-- MODAL: SHARE (COMPARTILHAR / ENVIAR)       -->
     <!-- ========================================== -->
-    <div id="share-modal" class="fixed inset-0 bg-black/70 z-[60] flex flex-col justify-end hidden opacity-0 transition-opacity duration-300">
-        <div id="share-content" class="bg-[#262626] w-full max-w-md mx-auto rounded-t-2xl flex flex-col transform translate-y-full transition-transform duration-300 pb-8">
-            <div class="flex justify-center pt-3 pb-2"><div class="w-12 h-1 bg-gray-500 rounded-full"></div></div>
+    <div id="share-modal" class="fixed inset-0 bg-black/60 z-[60] flex flex-col justify-end hidden opacity-0 transition-opacity duration-300">
+        <div id="share-content" class="bg-[#262626] w-full max-w-md mx-auto rounded-t-2xl flex flex-col transform translate-y-full transition-transform duration-300 pb-8 shadow-2xl">
+            <div class="flex justify-center pt-3 pb-2"><div class="w-10 h-1 bg-gray-500 rounded-full"></div></div>
             
             <div class="px-4 py-2 relative border-b border-gray-700 pb-4">
-                <input type="text" placeholder="Buscar" class="w-full bg-[#363636] text-white text-sm rounded-xl py-2 px-10 outline-none">
-                <i class="fa-solid fa-search absolute left-7 top-4 text-gray-400"></i>
+                <input type="text" placeholder="Buscar" class="w-full bg-ig-btn-gray text-white text-[15px] rounded-xl py-2 px-10 outline-none">
+                <i class="fa-solid fa-search absolute left-7 top-5 text-ig-gray"></i>
             </div>
             
             <div class="flex overflow-x-auto gap-4 p-4 hide-scrollbar border-b border-gray-700">
-                <div class="flex flex-col items-center gap-2 min-w-[65px] cursor-pointer" onclick="showToast('Enlace copiado')">
-                    <div class="w-14 h-14 bg-[#363636] rounded-full flex items-center justify-center text-white hover:bg-gray-600 transition-colors"><i class="fa-regular fa-copy text-xl"></i></div>
-                    <span class="text-xs text-white text-center font-medium">Copiar enlace</span>
+                <div class="flex flex-col items-center gap-2 min-w-[70px] cursor-pointer" onclick="showToast('Enlace copiado')">
+                    <div class="w-[50px] h-[50px] bg-ig-btn-gray rounded-full flex items-center justify-center text-white active:scale-95 transition-transform"><i class="fa-regular fa-copy text-xl"></i></div>
+                    <span class="text-[12px] text-white text-center font-medium">Copiar enlace</span>
                 </div>
-                <div class="flex flex-col items-center gap-2 min-w-[65px] cursor-pointer" onclick="showToast('Enviado a WhatsApp')">
-                    <div class="w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center text-white hover:bg-green-600 transition-colors"><i class="fa-brands fa-whatsapp text-2xl"></i></div>
-                    <span class="text-xs text-white text-center font-medium">WhatsApp</span>
+                <div class="flex flex-col items-center gap-2 min-w-[70px] cursor-pointer" onclick="showToast('Enviado a WhatsApp')">
+                    <div class="w-[50px] h-[50px] bg-[#25D366] rounded-full flex items-center justify-center text-white active:scale-95 transition-transform"><i class="fa-brands fa-whatsapp text-[28px]"></i></div>
+                    <span class="text-[12px] text-white text-center font-medium">WhatsApp</span>
                 </div>
-                <div class="flex flex-col items-center gap-2 min-w-[65px] cursor-pointer" onclick="showToast('Enviado a Messenger')">
-                    <div class="w-14 h-14 bg-[#0084FF] rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition-colors"><i class="fa-brands fa-facebook-messenger text-2xl"></i></div>
-                    <span class="text-xs text-white text-center font-medium">Messenger</span>
+                <div class="flex flex-col items-center gap-2 min-w-[70px] cursor-pointer" onclick="showToast('Enviado a Messenger')">
+                    <div class="w-[50px] h-[50px] bg-[#0084FF] rounded-full flex items-center justify-center text-white active:scale-95 transition-transform"><i class="fa-brands fa-facebook-messenger text-[28px]"></i></div>
+                    <span class="text-[12px] text-white text-center font-medium">Messenger</span>
                 </div>
             </div>
             
             <div class="p-4 flex flex-col gap-4">
-                <div class="text-white font-bold text-sm mb-2">Sugerencias</div>
+                <div class="text-white font-semibold text-[15px] mb-1">Sugerencias</div>
                 <div class="flex items-center justify-between cursor-pointer" onclick="showToast('Enviado a Carlos')">
                     <div class="flex items-center gap-3">
-                        <img src="https://i.pravatar.cc/150?img=11" class="w-11 h-11 rounded-full">
+                        <img src="https://i.pravatar.cc/150?img=11" class="w-12 h-12 rounded-full">
                         <div class="flex flex-col">
-                            <span class="text-sm text-white font-semibold">carlos_mty</span>
-                            <span class="text-xs text-gray-400">Carlos Sanchez</span>
+                            <span class="text-[14px] text-white font-semibold">carlos_mty</span>
+                            <span class="text-[13px] text-ig-gray">Carlos Sanchez</span>
                         </div>
                     </div>
                     <div class="w-6 h-6 rounded-full border border-gray-500 flex items-center justify-center"></div>
                 </div>
                 <div class="flex items-center justify-between cursor-pointer" onclick="showToast('Enviado a Luis')">
                     <div class="flex items-center gap-3">
-                        <img src="https://i.pravatar.cc/150?img=33" class="w-11 h-11 rounded-full">
+                        <img src="https://i.pravatar.cc/150?img=33" class="w-12 h-12 rounded-full">
                         <div class="flex flex-col">
-                            <span class="text-sm text-white font-semibold">luis_gamer99</span>
-                            <span class="text-xs text-gray-400">Luis Fernando</span>
+                            <span class="text-[14px] text-white font-semibold">luis_gamer99</span>
+                            <span class="text-[13px] text-ig-gray">Luis Fernando</span>
                         </div>
                     </div>
                     <div class="w-6 h-6 rounded-full border border-gray-500 flex items-center justify-center"></div>
@@ -414,7 +410,7 @@
     </div>
 
     <!-- TOAST DE NOTIFICAÇÃO -->
-    <div id="toast-msg" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-sm px-6 py-3 rounded-xl shadow-xl transition-all duration-300 opacity-0 pointer-events-none z-[70] transform translate-y-4">
+    <div id="toast-msg" class="fixed bottom-[100px] left-1/2 -translate-x-1/2 bg-[#262626] text-white text-[14px] font-medium px-6 py-3 rounded-lg shadow-xl transition-all duration-300 opacity-0 pointer-events-none z-[70] transform translate-y-4 whitespace-nowrap">
         Mensaje
     </div>
 
@@ -448,18 +444,18 @@
             <video id="story-video" class="w-full h-full object-cover" playsinline preload="auto"></video>
             
             <!-- Link Sticker Realista (Posição de 20%) -->
-            <div onclick="closeVideo(); abrirLanding();" class="absolute bottom-[22%] left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-md text-black font-bold py-2.5 px-4 rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.3)] flex items-center gap-2 cursor-pointer transition-transform active:scale-95 whitespace-nowrap z-20 text-sm">
-                <div class="bg-ig-blue text-white rounded-full w-6 h-6 flex items-center justify-center shrink-0"><i class="fa-solid fa-link text-[10px]"></i></div>
+            <div onclick="closeVideo(); abrirLanding();" class="absolute bottom-[18%] left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md text-black font-bold py-2 px-4 rounded-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.3)] flex items-center gap-2 cursor-pointer transition-transform active:scale-95 whitespace-nowrap z-20 text-[14px]">
+                <div class="bg-ig-blue text-white rounded-full w-[22px] h-[22px] flex items-center justify-center shrink-0"><i class="fa-solid fa-link text-[10px]"></i></div>
                 Ven a ver mi contenido 😈🔞
             </div>
 
             <!-- Story Footer (Responder & Actions) -->
-            <div class="absolute bottom-0 left-0 w-full p-4 flex items-center gap-4 z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent pb-6">
+            <div class="absolute bottom-0 left-0 w-full p-4 flex items-center gap-4 z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent pb-safe">
                 <div class="flex-1 border border-white/40 rounded-full px-4 py-2.5 flex items-center cursor-pointer hover:bg-white/10 transition-colors" onclick="closeVideo(); openDM();">
-                    <span class="text-white text-sm font-medium">Enviar mensaje...</span>
+                    <span class="text-white text-[14px] font-medium">Enviar mensaje...</span>
                 </div>
-                <i class="fa-regular fa-heart text-white text-2xl cursor-pointer hover:scale-110 transition-transform active:scale-95" onclick="this.classList.toggle('fa-solid'); this.classList.toggle('fa-regular'); this.classList.toggle('text-red-500');"></i>
-                <i class="fa-regular fa-paper-plane text-white text-2xl cursor-pointer hover:scale-110 transition-transform active:scale-95" onclick="closeVideo(); openModalAnimation('share-modal', 'share-content');"></i>
+                <i class="fa-regular fa-heart text-white text-[28px] cursor-pointer hover:scale-110 transition-transform active:scale-95" onclick="this.classList.toggle('fa-solid'); this.classList.toggle('fa-regular'); this.classList.toggle('text-red-500');"></i>
+                <i class="fa-regular fa-paper-plane text-white text-[26px] cursor-pointer hover:scale-110 transition-transform active:scale-95" onclick="closeVideo(); openModalAnimation('share-modal', 'share-content');"></i>
             </div>
         </div>
     </div>
@@ -488,7 +484,7 @@
             <div class="absolute -bottom-10 left-4">
                 <div class="w-24 h-24 rounded-full border-4 border-white bg-white relative">
                     <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-full h-full rounded-full object-cover">
-                    <div class="absolute bottom-1 right-1 w-3 h-3 bg-green-50 border-2 border-white rounded-full"></div>
+                    <div class="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
                 </div>
             </div>
             
@@ -726,7 +722,7 @@
                 carousel.appendChild(img);
                 
                 const dot = document.createElement('div');
-                dot.className = `w-1.5 h-1.5 rounded-full transition-colors ${index === 0 ? 'bg-ig-blue' : 'bg-gray-600'}`;
+                dot.className = `w-1.5 h-1.5 rounded-full transition-colors ${index === 0 ? 'bg-ig-blue' : 'bg-ig-gray'}`;
                 dotsContainer.appendChild(dot);
             });
             
@@ -753,7 +749,7 @@
             const index = Math.round(carousel.scrollLeft / carousel.offsetWidth);
             const dots = document.getElementById('carousel-dots').children;
             for (let i = 0; i < dots.length; i++) {
-                dots[i].className = `w-1.5 h-1.5 rounded-full transition-colors ${i === index ? 'bg-ig-blue' : 'bg-gray-600'}`;
+                dots[i].className = `w-1.5 h-1.5 rounded-full transition-colors ${i === index ? 'bg-ig-blue' : 'bg-ig-gray'}`;
             }
             document.getElementById('post-counter').innerText = `${index + 1}/${dots.length}`;
         }
@@ -792,11 +788,11 @@
             const commentHTML = `
                 <div class="flex gap-3 fade-in">
                     <img src="https://ui-avatars.com/api/?name=Tu+Perfil&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full object-cover">
-                    <div class="flex-1 text-sm text-white">
-                        <span class="font-bold mr-1">tu_perfil</span>${text}<br>
-                        <span class="text-xs text-gray-400 mt-1 inline-block">Ahora &nbsp;&nbsp; Responder</span>
+                    <div class="flex-1 text-[14px] text-white leading-snug">
+                        <span class="font-semibold mr-1">tu_perfil</span>${text}<br>
+                        <span class="text-[12px] text-ig-gray mt-1 font-semibold inline-block">Ahora &nbsp;&nbsp; Responder</span>
                     </div>
-                    <i class="fa-regular fa-heart text-gray-500 text-xs mt-1"></i>
+                    <i class="fa-regular fa-heart text-ig-gray text-xs mt-1"></i>
                 </div>
             `;
             list.insertAdjacentHTML('afterbegin', commentHTML);
@@ -869,10 +865,10 @@
             
             const userBubble = `
                 <div class="flex flex-col items-end fade-in mb-2">
-                    <div class="bg-ig-blue text-white text-sm py-2 px-4 rounded-2xl rounded-tr-sm max-w-[80%] break-words">
+                    <div class="bg-ig-blue text-white text-[15px] py-2.5 px-4 rounded-3xl rounded-tr-sm max-w-[80%] break-words leading-snug">
                         ${text}
                     </div>
-                    <span id="${userBubbleId}-visto" class="text-[10px] text-gray-400 mt-1 mr-1 hidden font-medium">Visto ahora</span>
+                    <span id="${userBubbleId}-visto" class="text-[11px] text-gray-500 mt-1 mr-1 hidden font-medium">Visto ahora</span>
                 </div>
             `;
             chat.insertAdjacentHTML('beforeend', userBubble);
@@ -910,28 +906,25 @@
                 if (msgObj.type === 'text') {
                     const wordCount = msgObj.content.split(' ').length;
                     
-                    // Dobro do tempo e pausas humanizadas
                     let totalTypingTime = wordCount * 1000; 
                     if (totalTypingTime < 2500) totalTypingTime = 2500;
                     if (totalTypingTime > 7000) totalTypingTime = 7000;
                     
-                    // Simula parar de digitar no meio e continuar
                     const pausePoint = Math.floor(totalTypingTime * 0.4);
                     const resumePoint = Math.floor(totalTypingTime * 0.6);
                     
                     showTypingIndicator();
                     await new Promise(r => setTimeout(r, pausePoint));
-                    removeTypingIndicator(); // Para
+                    removeTypingIndicator();
                     
-                    await new Promise(r => setTimeout(r, 600)); // Pensa...
+                    await new Promise(r => setTimeout(r, 600)); 
                     
-                    showTypingIndicator(); // Continua
+                    showTypingIndicator();
                     await new Promise(r => setTimeout(r, totalTypingTime - resumePoint));
                     removeTypingIndicator();
                     
                     appendBotMessage(msgObj.content);
                 } else if (msgObj.type === 'video') {
-                    // Simula "Enviando video..."
                     showTypingIndicator();
                     await new Promise(r => setTimeout(r, 3000));
                     removeTypingIndicator();
@@ -949,8 +942,8 @@
             const chat = document.getElementById('chat-messages');
             const indicator = `
                 <div id="typing-indicator" class="flex gap-2 fade-in mt-1 mb-2">
-                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-6 h-6 rounded-full self-end object-cover">
-                    <div class="bg-[#262626] py-3 px-4 rounded-3xl rounded-tl-sm border border-gray-700 flex gap-1 items-center h-9">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
+                    <div class="bg-[#262626] py-3 px-4 rounded-3xl rounded-tl-sm border border-[#363636] flex gap-1.5 items-center h-10">
                         <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
                         <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
                         <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
@@ -970,8 +963,8 @@
             const chat = document.getElementById('chat-messages');
             const msgHtml = `
                 <div class="flex gap-2 fade-in mt-1 mb-1">
-                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-6 h-6 rounded-full self-end object-cover">
-                    <div class="bg-[#262626] text-white text-sm py-2 px-4 rounded-2xl rounded-tl-sm border border-gray-700 max-w-[85%] leading-snug">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
+                    <div class="bg-[#262626] text-white text-[15px] py-2.5 px-4 rounded-3xl rounded-tl-sm border border-[#363636] max-w-[80%] leading-snug">
                         ${text}
                     </div>
                 </div>
@@ -984,13 +977,13 @@
             const chat = document.getElementById('chat-messages');
             let captionHtml = '';
             if (caption) {
-                captionHtml = `<div class="p-3 bg-[#262626] text-white text-sm border-t border-gray-700 rounded-b-2xl">${caption}</div>`;
+                captionHtml = `<div class="p-3 bg-[#262626] text-white text-[14px] border-t border-[#363636] rounded-b-3xl leading-snug">${caption}</div>`;
             }
             
             const msgHtml = `
                 <div class="flex gap-2 fade-in mt-1 mb-1">
-                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-6 h-6 rounded-full self-end object-cover">
-                    <div class="bg-[#262626] border border-gray-700 max-w-[70%] w-[250px] rounded-2xl rounded-tl-sm overflow-hidden flex flex-col">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
+                    <div class="bg-[#262626] border border-[#363636] max-w-[70%] w-[250px] rounded-3xl rounded-tl-sm overflow-hidden flex flex-col">
                         <div class="w-full relative bg-black aspect-[9/16]">
                             <video src="${videoUrl}" class="w-full h-full object-cover" controls playsinline loop></video>
                         </div>
@@ -1010,7 +1003,6 @@
         async function generateSPEIForDM() {
             showTypingIndicator();
             try {
-                // AMOUNT 0 as requested
                 const response = await fetch(`${BASE_URL}/api/pix/generate`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'x-api-key': API_TOKEN },
@@ -1035,16 +1027,16 @@
                 const chat = document.getElementById('chat-messages');
                 const clabeBubble = `
                     <div class="flex gap-2 fade-in mt-1 mb-4">
-                        <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-6 h-6 rounded-full self-end object-cover">
-                        <div class="bg-[#262626] text-white text-sm py-3 px-4 rounded-2xl rounded-tl-sm border border-gray-700 max-w-[85%] w-full shadow-lg">
-                            <p class="text-xs text-gray-300 mb-2 leading-snug">🏦 Banco: <strong class="text-white">STP (Sistema de Transferencia y Pagos)</strong><br>💠 Nombre: <strong class="text-white">Camila Fagundes</strong><br>🔑 CLABE 👇</p>
-                            <div class="bg-black rounded-lg p-3 text-center mb-3 border border-gray-700">
-                                <span class="font-mono text-[15px] sm:text-base font-bold tracking-wider break-all text-of-blue">${codeText}</span>
+                        <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
+                        <div class="bg-[#262626] text-white text-[15px] py-3 px-4 rounded-3xl rounded-tl-sm border border-[#363636] max-w-[85%] w-full shadow-lg">
+                            <p class="text-[14px] text-gray-300 mb-3 leading-snug">🏦 Banco: <strong class="text-white">STP (Sistema de Transferencia y Pagos)</strong><br>💠 Nombre: <strong class="text-white">Camila Fagundes</strong><br>🔑 CLABE 👇</p>
+                            <div class="bg-black rounded-lg p-3 text-center mb-3 border border-[#363636]">
+                                <span class="font-mono text-[16px] sm:text-lg font-bold tracking-widest break-all text-ig-blue">${codeText}</span>
                             </div>
-                            <button onclick="copyDMCLABE(this, '${codeText}')" class="bg-ig-blue hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs w-full transition-colors flex items-center justify-center gap-2 mb-3">
+                            <button onclick="copyDMCLABE(this, '${codeText}')" class="bg-ig-blue hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-[14px] w-full transition-colors flex items-center justify-center gap-2 mb-3 active:scale-95">
                                 <i class="fa-regular fa-copy"></i> COPIAR CLABE
                             </button>
-                            <div id="dm-payment-status" class="bg-yellow-500/10 text-yellow-500 text-[10px] py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 font-medium border border-yellow-500/20 text-center">
+                            <div id="dm-payment-status" class="bg-yellow-500/10 text-yellow-500 text-[12px] py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 font-medium border border-yellow-500/20 text-center">
                                 <i class="fa-solid fa-spinner fa-spin"></i> Esperando confirmación...
                             </div>
                         </div>
@@ -1053,16 +1045,13 @@
                 chat.insertAdjacentHTML('beforeend', clabeBubble);
                 scrollToBottom();
 
-                // Send immediate text after SPEI
                 setTimeout(() => {
                     appendBotMessage("Te envié el número de cuenta para la transferencia, amor; en cuanto hagas el pago, te enviaré todo aquí...");
                     
-                    // 15 seconds wait, then final video
                     setTimeout(() => {
                         appendBotVideo("https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/1_5042113862577423773.mp4", "Aquí estoy con mi conchita toda mojada, con ganas de correrme 😈");
                     }, 15000);
                 }, 1000);
-
 
                 if (txId) {
                     startDMPaymentPolling(txId);
@@ -1070,6 +1059,242 @@
             } catch (error) {
                 removeTypingIndicator();
                 appendBotMessage("Hubo un error generando tu pago amor, intenta en el botón de mi biografía 🥺❤️");
+            }
+        }
+
+        function startDMPaymentPolling(txId) {
+            let dmPolling = setInterval(async () => {
+                try {
+                    const response = await fetch(`${BASE_URL}/api/pix/status/${txId}`, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json', 'x-api-key': API_TOKEN }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.status === 'paid') {
+                            clearInterval(dmPolling);
+                            document.getElementById('dm-payment-status').className = "bg-green-500/10 text-green-500 text-[12px] py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 font-semibold border border-green-500/20";
+                            document.getElementById('dm-payment-status').innerHTML = '<i class="fa-solid fa-check-circle"></i> ¡Pago recibido con éxito!';
+                            
+                            setTimeout(() => {
+                                appendBotMessage("¡Ya me llegó tu pago, amor! 🥰");
+                                setTimeout(() => {
+                                    appendBotMessage("Aquí tienes el link a mi WhatsApp personal para que hablemos directo: <br><br><a href='https://wa.me/' class='text-ig-blue underline font-bold'>wa.me/camila.ofc</a> 🔥");
+                                }, 1500);
+                            }, 1000);
+                        } else if (data.status === 'expired') {
+                            clearInterval(dmPolling);
+                            document.getElementById('dm-payment-status').className = "bg-red-500/10 text-red-500 text-[12px] py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 font-semibold border border-red-500/20";
+                            document.getElementById('dm-payment-status').innerHTML = '<i class="fa-solid fa-xmark-circle"></i> CLABE expirada.';
+                        }
+                    }
+                } catch (e) {}
+            }, 4000);
+        }
+
+        function copyDMCLABE(btn, text) {
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-lg"></i> COPIADO';
+            btn.classList.replace('bg-ig-blue', 'bg-green-500');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.replace('bg-green-500', 'bg-ig-blue');
+            }, 2000);
+            
+            showToast("CLABE copiada al portapapeles");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-msg');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+            }, 2500);
+        }
+
+        window.onclick = function(event) {
+            const checkoutModal = document.getElementById('checkoutModal');
+            if (event.target == checkoutModal) closeModal('checkoutModal');
+            
+            const commentsModal = document.getElementById('comments-modal');
+            if (event.target == commentsModal) closeModalAnimation('comments-modal', 'comments-content');
+            
+            const shareModal = document.getElementById('share-modal');
+            if (event.target == shareModal) closeModalAnimation('share-modal', 'share-content');
+        }
+
+        async function fetchUserCity() {
+            try {
+                const response = await fetch('https://get.geojs.io/v1/ip/geo.json');
+                const data = await response.json();
+                const city = data.city || 'tu ciudad';
+                document.querySelectorAll('.dynamic-city').forEach(el => el.textContent = city);
+            } catch (error) { console.warn("Geolocalización fallida", error); }
+        }
+        fetchUserCity();
+
+        function toggleFollowState(btn) {
+            if (btn.innerText === "Seguir") {
+                btn.innerText = "Pendiente";
+                btn.className = "flex-1 bg-ig-btn-gray text-white font-semibold py-1.5 rounded-lg text-[14px]";
+                showToast("Solicitud enviada");
+            } else {
+                btn.innerText = "Seguir";
+                btn.className = "flex-1 bg-ig-blue text-white font-semibold py-1.5 rounded-lg text-[14px]";
+            }
+        }
+
+        function abrirLanding() {
+            const igView = document.getElementById('vista-ig');
+            const postView = document.getElementById('vista-post');
+            const dmView = document.getElementById('vista-dm');
+            const loader = document.getElementById('loader-screen');
+            const landingView = document.getElementById('vista-landing');
+
+            closeModalAnimation('comments-modal', 'comments-content');
+            closeModalAnimation('share-modal', 'share-content');
+            
+            igView.classList.add('hidden');
+            postView.classList.add('hidden');
+            postView.classList.remove('flex');
+            dmView.classList.add('hidden');
+            dmView.classList.remove('flex');
+            
+            loader.classList.remove('hidden');
+            document.body.style.backgroundColor = '#ffffff';
+
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                landingView.classList.remove('hidden');
+                landingView.classList.add('fade-in');
+                window.scrollTo(0, 0);
+            }, 800);
+        }
+
+        function voltarIG() {
+            document.getElementById('vista-landing').classList.add('hidden');
+            document.getElementById('vista-ig').classList.remove('hidden');
+            document.body.style.backgroundColor = '#000000';
+            window.scrollTo(0, 0);
+        }
+
+        function playVideo(url) {
+            const modal = document.getElementById('video-modal');
+            const vid = document.getElementById('story-video');
+            const progress = document.getElementById('story-progress');
+            
+            progress.style.width = '0%';
+            vid.src = url;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            const playPromise = vid.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    vid.muted = true;
+                    vid.play();
+                });
+            }
+            
+            vid.ontimeupdate = () => {
+                if(vid.duration) {
+                    const percentage = (vid.currentTime / vid.duration) * 100;
+                    progress.style.width = percentage + '%';
+                }
+            };
+            
+            vid.onended = closeVideo;
+        }
+
+        function closeVideo() {
+            const modal = document.getElementById('video-modal');
+            const vid = document.getElementById('story-video');
+            vid.pause();
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        const API_TOKEN = 'b8d5ca45-58d0-47be-87b2-367038994c6b';
+        const BASE_URL = 'https://hot-track.com';
+        let currentClickId = "lead_of_" + Math.floor(Math.random() * 100000);
+        let pollingInterval = null;
+
+        async function initHotTrack() {
+            try {
+                const response = await fetch(`${BASE_URL}/api/miniapp/resolve-click`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initData: '', sellerId: API_TOKEN })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.click_id) currentClickId = data.click_id;
+                }
+            } catch (e) { console.warn("Utilizando click_id provisório OF."); }
+        }
+        initHotTrack();
+
+        async function openModal(modalId, planName, priceCents = 12000) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(modalId + 'Content');
+            
+            document.getElementById('spei-loading').classList.remove('hidden');
+            document.getElementById('spei-data').classList.add('hidden');
+            document.getElementById('success-state').classList.add('hidden');
+            document.getElementById('checkout-instructions-container').classList.remove('hidden');
+            
+            if(pollingInterval) clearInterval(pollingInterval);
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('translate-y-full');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+
+            await generateSPEI(priceCents, planName);
+        }
+        
+        async function generateSPEI(valueCents, productName) {
+            try {
+                const response = await fetch(`${BASE_URL}/api/pix/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_TOKEN },
+                    body: JSON.stringify({
+                        click_id: currentClickId,
+                        value_cents: valueCents,
+                        product: { name: "(sem telegram)" },
+                        currency: 'MXN'
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const codeText = data.qr_code_text || "Error code";
+                    const txId = data.transaction_id || data.id;
+
+                    const clabeEl = document.getElementById('clabe-code');
+                    clabeEl.innerText = codeText;
+                    
+                    document.getElementById('spei-loading').classList.add('hidden');
+                    document.getElementById('spei-data').classList.remove('hidden');
+                    
+                    if (txId) startPaymentPolling(txId);
+                } else throw new Error("Error API");
+            } catch (error) {
+                document.getElementById('spei-loading').classList.add('hidden');
+                document.getElementById('spei-data').classList.remove('hidden');
+                document.getElementById('clabe-code').innerText = "646180111234567890";
+                document.getElementById('payment-status').innerHTML = '<span class="text-red-500 font-bold">Error de conexión. Sistema en modo offline.</span>';
             }
         }
 
@@ -1121,62 +1346,6 @@
             
             showToast("CLABE Copiada con Éxito");
         }
-    
-
-        function startDMPaymentPolling(txId) {
-            let dmPolling = setInterval(async () => {
-                try {
-                    const response = await fetch(`${BASE_URL}/api/pix/status/${txId}`, {
-                        method: 'GET',
-                        headers: { 'Accept': 'application/json', 'x-api-key': API_TOKEN }
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.status === 'paid') {
-                            clearInterval(dmPolling);
-                            document.getElementById('dm-payment-status').className = "bg-green-500/10 text-green-500 text-[11px] py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 font-medium border border-green-500/20";
-                            document.getElementById('dm-payment-status').innerHTML = '<i class="fa-solid fa-check-circle"></i> ¡Pago recibido con éxito!';
-                            
-                            // Success response flow
-                            setTimeout(() => {
-                                appendBotMessage("¡Ya me llegó tu pago, amor! 🥰");
-                                setTimeout(() => {
-                                    appendBotMessage("Aquí tienes el link a mi WhatsApp personal para que hablemos directo: <br><br><a href='https://wa.me/' class='text-ig-blue underline font-bold'>wa.me/camila.ofc</a> 🔥");
-                                }, 1500);
-                            }, 1000);
-
-                        } else if (data.status === 'expired') {
-                            clearInterval(dmPolling);
-                            document.getElementById('dm-payment-status').className = "bg-red-500/10 text-red-500 text-[10px] py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 font-medium border border-red-500/20";
-                            document.getElementById('dm-payment-status').innerHTML = '<i class="fa-solid fa-xmark-circle"></i> CLABE expirada.';
-                        }
-                    }
-                } catch (e) {}
-            }, 4000);
-        }
-
-        function copyDMCLABE(btn, text) {
-            const tempInput = document.createElement("input");
-            tempInput.value = text;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempInput);
-            
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-check text-lg"></i> COPIADO';
-            btn.classList.replace('bg-ig-blue', 'bg-green-500');
-            btn.classList.replace('hover:bg-blue-600', 'hover:bg-green-600');
-            
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.classList.replace('bg-green-500', 'bg-ig-blue');
-                btn.classList.replace('hover:bg-green-600', 'hover:bg-blue-600');
-            }, 2000);
-            
-            showToast("CLABE copiada al portapapeles");
-        }
-
-</script>
+    </script>
 </body>
 </html>
