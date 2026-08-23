@@ -76,7 +76,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Animações nativas do Instagram */
         @keyframes likeHeart {
             0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
             15% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
@@ -96,7 +95,6 @@
             100% { transform: scale(1); }
         }
         
-        /* Desativa estilo do clique nativo no teclado */
         .key-char, #shift-btn, .action-btn {
             -webkit-tap-highlight-color: transparent;
         }
@@ -301,7 +299,6 @@
     <!-- ========================================== -->
     <!-- VISTA 3: DIRECT MESSAGE (DM) SIMULATION    -->
     <!-- ========================================== -->
-    <!-- MUDANÇA ESTRUTURAL AQUI: h-[100dvh] e overflow-hidden garantem que o teclado empurre o layout -->
     <div id="vista-dm" class="hidden flex-col h-[100dvh] bg-ig-bg w-full fixed inset-0 z-[55] overflow-hidden">
         <header class="shrink-0 bg-ig-bg border-b border-ig-border z-40 px-4 h-14 flex justify-between items-center w-full max-w-md mx-auto">
             <div class="flex items-center gap-4 cursor-pointer" onclick="closeDM()">
@@ -320,7 +317,6 @@
             </div>
         </header>
         
-        <!-- O container principal é empurrado NATIVAMENTE pela barra inferior no modo flex -->
         <main id="chat-main-container" class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto scroll-smooth">
             <div class="flex flex-col items-center justify-center mb-8 mt-4">
                 <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-24 h-24 rounded-full mb-3 object-cover">
@@ -330,31 +326,22 @@
                 <button onclick="closeDM()" class="bg-[#363636] text-white font-semibold py-1.5 px-4 rounded-lg text-sm mt-4 hover:bg-[#262626]">Ver perfil</button>
             </div>
             <div id="chat-messages" class="flex flex-col gap-3"></div>
-            <!-- Respiro natural no final -->
             <div class="h-2 shrink-0"></div>
         </main>
 
-        <!-- WRAPPER DO INPUT E TECLADO CUSTOMIZADO (Fora do container de scroll, faz parte do Flex Layout) -->
         <div class="shrink-0 w-full max-w-md mx-auto bg-[#000] z-40 border-t border-ig-border shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
-            
-            <!-- Barra de Input -->
             <div class="p-3 bg-ig-bg">
                 <div class="bg-[#262626] rounded-full flex items-center px-4 py-2.5 gap-3">
                     <div class="bg-ig-blue w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0 cursor-pointer"><i class="fa-solid fa-camera"></i></div>
-                    
-                    <!-- INPUTMODE="NONE" PREVINE O TECLADO NATIVO -->
                     <input type="text" id="dm-input" inputmode="none" placeholder="Mensaje..." class="flex-1 bg-transparent text-white text-sm outline-none" onclick="showCustomKeyboard(event)" onfocus="showCustomKeyboard(event)" readonly>
-                    
                     <i class="fa-solid fa-microphone text-white text-xl cursor-pointer"></i>
                     <i class="fa-regular fa-image text-white text-xl cursor-pointer"></i>
                     <button id="send-btn" class="hidden text-ig-blue font-bold text-sm ml-2" onclick="sendDMCustom()">Enviar</button>
                 </div>
             </div>
             
-            <!-- TECLADO CUSTOMIZADO (iOS Style) -->
             <div id="custom-keyboard" class="h-0 overflow-hidden transition-[height] duration-300 ease-out bg-[#1c1c1e] flex flex-col justify-end w-full select-none">
                 <div class="p-2 pb-6 flex flex-col gap-2.5">
-                    <!-- Row 1 -->
                     <div class="flex justify-center gap-1.5 w-full">
                         <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('q')">q</button>
                         <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('w')">w</button>
@@ -367,7 +354,6 @@
                         <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('o')">o</button>
                         <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('p')">p</button>
                     </div>
-                    <!-- Row 2 -->
                     <div class="flex justify-center gap-1.5 w-full px-[5%]">
                         <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('a')">a</button>
                         <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('s')">s</button>
@@ -379,7 +365,6 @@
                         <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('k')">k</button>
                         <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('l')">l</button>
                     </div>
-                    <!-- Row 3 -->
                     <div class="flex justify-center gap-1.5 w-full">
                         <button id="shift-btn" class="w-[12%] h-11 bg-[#323234] rounded-md text-white flex items-center justify-center shadow transition-colors" onclick="toggleShift()">
                             <i class="fa-solid fa-arrow-up"></i>
@@ -397,7 +382,6 @@
                             <i class="fa-solid fa-delete-left"></i>
                         </button>
                     </div>
-                    <!-- Row 4 -->
                     <div class="flex justify-center gap-1.5 w-full">
                         <button class="action-btn w-[20%] h-11 bg-[#323234] rounded-md text-white font-medium shadow active:bg-white active:text-black transition-colors">123</button>
                         <button class="action-btn flex-1 h-11 bg-[#4b4b4d] rounded-md text-white shadow active:bg-white active:text-black transition-colors font-medium text-sm" onclick="typeChar(' ')">espacio</button>
@@ -568,7 +552,7 @@
             <i class="fa-solid fa-arrow-left text-xl text-of-gray cursor-pointer" onclick="voltarIG()"></i>
             <div>
                 <h1 class="font-bold text-lg flex items-center gap-1 leading-tight">Camila 💋✨ <i class="fa-solid fa-circle-check text-of-blue text-sm"></i></h1>
-                <p class="text-xs text-of-gray font-medium">145 publicaciones • 754 Me gusta</p>
+                <p class="text-xs text-of-gray font-medium">348 publicaciones • 1.4k Me gusta</p>
             </div>
         </header>
 
@@ -584,88 +568,145 @@
             </div>
             
             <div class="absolute -bottom-10 right-4 flex gap-2">
-                <button onclick="openModal('checkoutModal', 'Suscripción VIP')" class="w-10 h-10 rounded-full border border-of-border flex items-center justify-center text-of-gray hover:bg-gray-50"><i class="fa-regular fa-star"></i></button>
-                <button onclick="openModal('checkoutModal', 'Suscripción VIP')" class="w-10 h-10 rounded-full border border-of-border flex items-center justify-center text-of-gray hover:bg-gray-50"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+                <button onclick="document.getElementById('pacotes-section').scrollIntoView({behavior: 'smooth'})" class="w-10 h-10 rounded-full border border-of-border flex items-center justify-center text-of-gray hover:bg-gray-50"><i class="fa-regular fa-star"></i></button>
+                <button onclick="document.getElementById('pacotes-section').scrollIntoView({behavior: 'smooth'})" class="w-10 h-10 rounded-full border border-of-border flex items-center justify-center text-of-gray hover:bg-gray-50"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
             </div>
         </div>
 
+        <!-- BIO DIRETA AO PONTO -->
         <div class="mt-14 px-4">
             <h2 class="font-black text-xl flex items-center gap-1">Camila 💋✨ <i class="fa-solid fa-circle-check text-of-blue text-base"></i></h2>
-            <p class="text-of-gray text-sm mb-3">@camila.ofc • <span class="text-xs">Visto por última vez hoy</span></p>
+            <p class="text-of-gray text-sm mb-3">@camila.ofc • <span class="text-xs text-green-600 font-bold">En línea ahora</span></p>
             
-            <div class="text-sm leading-relaxed text-of-dark space-y-2">
-                <p>Bienvenidos a mi rincón más íntimo 😈🔥</p>
-                <p>Soy una chica de <span class="dynamic-city font-bold">tu ciudad</span> dispuesta a cumplir tus fantasías. Al suscribirte obtienes acceso inmediato a:</p>
-                <ul class="space-y-1 mt-2">
-                    <li>💦 <strong class="text-of-blue">Fotos y videos sin censura</strong> de mi galería privada.</li>
-                    <li>📱 <strong class="text-of-blue">Mi WhatsApp Personal</strong> para chat directo (GFE).</li>
-                    <li>🔥 <strong class="text-of-blue">Encuentros Presenciales:</strong> Prioridad para agendar citas en hotel o domicilio.</li>
-                </ul>
-                <p class="text-xs text-of-gray italic mt-2">Pagos 100% seguros y anónimos.</p>
+            <div class="text-sm leading-relaxed text-of-dark space-y-2 bg-gray-50 p-3.5 rounded-xl border border-of-border">
+                <p>Modelo GFE & Creadora de contenido exclusivo 🔞🔥</p>
+                <p>📍 En <span class="dynamic-city font-bold">tu ciudad</span> para citas privadas.</p>
+                <p class="font-semibold text-of-blue">👇 Selecciona tu paquete abajo para desbloquear todo:</p>
             </div>
         </div>
 
-        <div class="mt-5 px-4">
-            <div class="border border-of-border rounded-xl overflow-hidden shadow-sm">
-                <div class="bg-gray-50 px-4 py-2.5 border-b border-of-border flex justify-between items-center">
-                    <span class="font-bold text-xs text-gray-500 uppercase tracking-widest">Suscripción</span>
-                    <span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase">50% OFF HOY</span>
+        <!-- SEÇÃO DE PACOTES EXCLUSIVOS -->
+        <div class="mt-5 px-4 space-y-3" id="pacotes-section">
+            <div class="text-xs font-black uppercase tracking-wider text-gray-400 text-center mb-1">✨ ELIGE TU PACK ✨</div>
+            
+            <!-- Básico -->
+            <button onclick="openModal('checkoutModal', 'Pack Básico', 5000)" class="w-full bg-white hover:bg-gray-50 border border-of-border p-3.5 rounded-xl text-left flex justify-between items-center shadow-sm transition-all active:scale-[0.99]">
+                <div>
+                    <div class="font-black text-sm text-of-dark">🔸 BÁSICO</div>
+                    <div class="text-xs text-of-gray">7 Archivos (Fotos y vídeos suaves)</div>
                 </div>
-                <div class="p-4">
-                    <button onclick="openModal('checkoutModal', 'Suscripción VIP')" class="w-full bg-of-blue hover:bg-of-blue-hover text-white font-black text-base py-3.5 rounded-full transition-transform active:scale-[0.98] flex justify-between items-center px-6 shadow-md">
-                        <span class="uppercase tracking-wide">Suscribirse</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-sm line-through opacity-70">$240</span>
-                            <span class="text-lg">$120 MXN</span>
-                        </div>
-                    </button>
-                    <p class="text-center text-xs text-of-gray mt-3 flex justify-center items-center gap-1">
-                        <i class="fa-solid fa-lock"></i> Pago procesado de forma segura y discreta.
-                    </p>
+                <div class="text-of-blue font-black text-base">$50 <span class="text-xs font-normal">MXN</span></div>
+            </button>
+
+            <!-- Pack Full -->
+            <button onclick="openModal('checkoutModal', 'Pack Full', 11000)" class="w-full bg-of-blue hover:bg-of-blue-hover text-white p-3.5 rounded-xl text-left flex justify-between items-center shadow-md transition-all active:scale-[0.99] relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-extrabold px-2 py-0.5 rounded-bl uppercase">Más vendido</div>
+                <div>
+                    <div class="font-black text-sm">🔥 PACK FULL</div>
+                    <div class="text-xs text-blue-100">+105 Archivos: Sexo Rudo, Anal y Orgías</div>
                 </div>
-            </div>
+                <div class="font-black text-base">$110 <span class="text-xs font-normal opacity-80">MXN</span></div>
+            </button>
+
+            <!-- VIP Total -->
+            <button onclick="openModal('checkoutModal', 'VIP Total', 23000)" class="w-full bg-white hover:bg-gray-50 border border-of-border p-3.5 rounded-xl text-left flex justify-between items-center shadow-sm transition-all active:scale-[0.99]">
+                <div>
+                    <div class="font-black text-sm text-of-dark">👑 VIP TOTAL</div>
+                    <div class="text-xs text-of-gray">Pack Full + WhatsApp + Videollamada (15 min) + Fetichismos</div>
+                </div>
+                <div class="text-of-blue font-black text-base">$230 <span class="text-xs font-normal">MXN</span></div>
+            </button>
+
+            <!-- Elite Encuentros -->
+            <button onclick="openModal('checkoutModal', 'Elite Encuentros', 45000)" class="w-full bg-gray-900 hover:bg-black text-white p-3.5 rounded-xl text-left flex justify-between items-center shadow-md transition-all active:scale-[0.99]">
+                <div>
+                    <div class="font-black text-sm text-yellow-400">💎 ELITE ENCUENTROS</div>
+                    <div class="text-xs text-gray-300">WhatsApp directo cita presencial + Acervo 3 años</div>
+                </div>
+                <div class="font-black text-base text-yellow-400">$450 <span class="text-xs font-normal text-white">MXN</span></div>
+            </button>
         </div>
 
-        <div class="p-4 space-y-5 bg-gray-50/50 mt-6">
-            <div class="bg-white border border-of-border rounded-xl p-4 shadow-sm">
+        <!-- FEED COM MÚLTIPLAS PRÉVIAS -->
+        <div class="p-4 space-y-6 bg-gray-50/50 mt-6" id="of-feed-posts">
+            <div class="text-center text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-200 pb-2">Acervo de Previas (Visualización Única 5s)</div>
+
+            <!-- POST 1 -->
+            <div class="bg-white border border-of-border rounded-xl p-4 shadow-sm" id="of-post-1">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-3">
                         <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-10 h-10 rounded-full object-cover">
                         <div>
                             <div class="font-bold text-sm flex items-center gap-1">Camila 💋✨ <i class="fa-solid fa-circle-check text-of-blue text-xs"></i></div>
-                            <div class="text-xs text-of-gray">Hace 2 horas</div>
+                            <div class="text-xs text-of-gray">Hace 15 min • Vista previa 5s</div>
                         </div>
                     </div>
-                    <i class="fa-solid fa-ellipsis text-of-gray"></i>
+                    <span class="bg-blue-50 text-of-blue text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-200">1 sola vez</span>
                 </div>
-                <p class="text-sm mb-3">Recién salida de la ducha... ¿Me ayudas a secarme? 💦🙈 Te dejé un regalito en video. Suscríbete para verlo completo y escribirme al WhatsApp.</p>
-                <div class="relative bg-black rounded-lg aspect-square overflow-hidden cursor-pointer" onclick="openModal('checkoutModal', 'Suscripción VIP')">
-                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F.jpg" class="w-full h-full object-cover opacity-50 blur-xl scale-110">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
-                        <i class="fa-solid fa-lock text-4xl text-white mb-3"></i>
-                        <span class="font-bold text-white bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-sm uppercase tracking-wider">Suscríbete para ver</span>
+                <p class="text-sm mb-3">¿Quieres ver cómo me pongo cuando nadie me ve? 😈🔥 Toca para ver la previa de 5 segundos.</p>
+                <div class="media-container relative bg-black rounded-lg aspect-[3/4] overflow-hidden cursor-pointer" onclick="playInlinePreview('of-post-1', 'https://pub-c737fc13f75b440d8a7a6655e86b4ead.r2.dev/1_5042113862577423790.mp4')">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F.jpg" class="w-full h-full object-cover opacity-60 blur-md scale-105">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/20 overlay-prompt">
+                        <div class="w-12 h-12 bg-of-blue rounded-full flex items-center justify-center mb-2 animate-pulse shadow-lg">
+                            <i class="fa-solid fa-play text-white text-lg ml-1"></i>
+                        </div>
+                        <span class="font-bold text-white bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-full text-xs uppercase tracking-wider border border-white/20">Tocar para ver previa (5s)</span>
                     </div>
                 </div>
             </div>
-            
-            <div class="bg-white border border-of-border rounded-xl p-4 shadow-sm">
+
+            <!-- POST 2 -->
+            <div class="bg-white border border-of-border rounded-xl p-4 shadow-sm" id="of-post-2">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-3">
                         <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-10 h-10 rounded-full object-cover">
                         <div>
                             <div class="font-bold text-sm flex items-center gap-1">Camila 💋✨ <i class="fa-solid fa-circle-check text-of-blue text-xs"></i></div>
-                            <div class="text-xs text-of-gray">Ayer</div>
+                            <div class="text-xs text-of-gray">Hace 1 hora • Vista previa 5s</div>
                         </div>
                     </div>
+                    <span class="bg-blue-50 text-of-blue text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-200">1 sola vez</span>
                 </div>
-                <p class="text-sm mb-3">Jugando un ratito solita en la cama... 🔥 ¿Quieres ser mi compañero? Las citas presenciales están abiertas amor.</p>
-                <div class="relative bg-black rounded-lg aspect-[4/3] overflow-hidden cursor-pointer" onclick="openModal('checkoutModal', 'Suscripción VIP')">
-                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/N%CC%83ejejeje%2C%20amo%20mis%20un%CC%83as%20azules%3B)%20(2).jpg" class="w-full h-full object-cover opacity-50 blur-xl scale-110">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
-                        <i class="fa-solid fa-lock text-4xl text-white mb-3"></i>
-                        <span class="font-bold text-white bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-sm uppercase tracking-wider">Suscríbete para ver</span>
+                <p class="text-sm mb-3">Jugando con mis juguetes nuevos en la cama... 🙈 ¿Te vienes? Mira la previa antes de que se bloquee.</p>
+                <div class="media-container relative bg-black rounded-lg aspect-[3/4] overflow-hidden cursor-pointer" onclick="playInlinePreview('of-post-2', 'https://pub-c737fc13f75b440d8a7a6655e86b4ead.r2.dev/1_5042113862577423788.mp4')">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/N%CC%83ejejeje%2C%20amo%20mis%20un%CC%83as%20azules%3B)%20(2).jpg" class="w-full h-full object-cover opacity-60 blur-md scale-105">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/20 overlay-prompt">
+                        <div class="w-12 h-12 bg-of-blue rounded-full flex items-center justify-center mb-2 animate-pulse shadow-lg">
+                            <i class="fa-solid fa-play text-white text-lg ml-1"></i>
+                        </div>
+                        <span class="font-bold text-white bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-full text-xs uppercase tracking-wider border border-white/20">Tocar para ver previa (5s)</span>
                     </div>
                 </div>
+            </div>
+
+            <!-- POST 3 -->
+            <div class="bg-white border border-of-border rounded-xl p-4 shadow-sm" id="of-post-3">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-10 h-10 rounded-full object-cover">
+                        <div>
+                            <div class="font-bold text-sm flex items-center gap-1">Camila 💋✨ <i class="fa-solid fa-circle-check text-of-blue text-xs"></i></div>
+                            <div class="text-xs text-of-gray">Hace 3 horas • Vista previa 5s</div>
+                        </div>
+                    </div>
+                    <span class="bg-blue-50 text-of-blue text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-200">1 sola vez</span>
+                </div>
+                <p class="text-sm mb-3">Probando lencería transparente para mis suscriptores VIP... 🥵🔥</p>
+                <div class="media-container relative bg-black rounded-lg aspect-[3/4] overflow-hidden cursor-pointer" onclick="playInlinePreview('of-post-3', 'https://pub-c737fc13f75b440d8a7a6655e86b4ead.r2.dev/1_5042113862577423768.mp4')">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Kuchauu%2C%20dias%20lindos-))%20(2).jpg" class="w-full h-full object-cover opacity-60 blur-md scale-105">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/20 overlay-prompt">
+                        <div class="w-12 h-12 bg-of-blue rounded-full flex items-center justify-center mb-2 animate-pulse shadow-lg">
+                            <i class="fa-solid fa-play text-white text-lg ml-1"></i>
+                        </div>
+                        <span class="font-bold text-white bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-full text-xs uppercase tracking-wider border border-white/20">Tocar para ver previa (5s)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center py-4">
+                <button onclick="document.getElementById('pacotes-section').scrollIntoView({behavior: 'smooth'})" class="bg-of-blue hover:bg-of-blue-hover text-white font-black px-6 py-3 rounded-full text-xs uppercase tracking-widest shadow-md">
+                    🔒 Desbloquear +105 Archivos Completos
+                </button>
             </div>
         </div>
     </div>
@@ -698,9 +739,14 @@
                     </div>
                     <div id="spei-data" class="bg-white rounded-xl p-0 text-center hidden">
                         <p class="text-xs font-bold text-of-gray uppercase tracking-widest mb-2">Tu CLABE (SPEI) para depositar:</p>
-                        <div class="bg-gray-50 border-2 border-of-blue/30 rounded-xl p-4 mb-4 relative overflow-hidden">
+                        <div class="bg-gray-50 border-2 border-of-blue/30 rounded-xl p-4 mb-4 relative overflow-hidden text-left">
                             <div class="absolute top-0 left-0 w-full h-1 bg-of-blue"></div>
-                            <p id="clabe-code" class="text-2xl sm:text-3xl font-mono text-of-dark tracking-widest break-all font-black">---</p>
+                            <p class="text-[13px] text-gray-700 mb-2 leading-relaxed">
+                                Banco: STP (Sistema de Transferencia y Pagos)<br>
+                                Nombre: Camila Fagundes<br>
+                                CLABE:
+                            </p>
+                            <p id="clabe-code" class="text-xl sm:text-2xl font-mono text-of-dark tracking-widest break-all font-black text-center mt-2">---</p>
                         </div>
                         <button onclick="copyCLABE()" class="w-full py-4 bg-of-blue hover:bg-of-blue-hover text-white rounded-xl text-base font-black flex items-center justify-center gap-2 mb-4 shadow-[0_4px_15px_rgba(0,175,240,0.3)]">
                             <i class="fa-regular fa-copy text-lg"></i> COPIAR CLABE EXACTA
@@ -741,7 +787,6 @@
         let currentPostId = null;
         let postStates = {};
         
-        // Variaveis Controle e Downsell
         let autoFlowStarted = false;
         let notifTimeout = null;
         let chatStep = 0;
@@ -753,22 +798,66 @@
         Object.keys(postsData).forEach(id => { postStates[id] = { liked: false, saved: false }; });
 
         // ========================================================
-        // TECLADO CUSTOMIZADO (BLOQUEIA TECLADO NATIVO DA WEBVIEW)
+        // ONLYFANS: PREVIAS INLINE (5 SEGUNDOS)
         // ========================================================
+        function playInlinePreview(postId, videoUrl) {
+            const postDiv = document.getElementById(postId);
+            if(!postDiv) return;
+            
+            const mediaContainer = postDiv.querySelector('.media-container');
+            if(!mediaContainer || mediaContainer.classList.contains('locked')) return;
 
+            mediaContainer.innerHTML = `
+                <video src="${videoUrl}" class="w-full h-full object-cover" autoplay playsinline muted></video>
+                <div class="absolute top-3 right-3 bg-black/70 text-white text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider backdrop-blur-md">
+                    ⏱️ <span id="timer-${postId}">5</span>s
+                </div>
+            `;
+
+            let timeLeft = 5;
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                const timerSpan = document.getElementById(`timer-${postId}`);
+                if(timerSpan) timerSpan.innerText = timeLeft;
+                
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    lockOFPostInline(postId);
+                }
+            }, 1000);
+        }
+
+        function lockOFPostInline(postId) {
+            const postDiv = document.getElementById(postId);
+            if(!postDiv) return;
+            
+            const mediaContainer = postDiv.querySelector('.media-container');
+            if(mediaContainer) {
+                mediaContainer.classList.add('locked');
+                mediaContainer.onclick = () => document.getElementById('pacotes-section').scrollIntoView({behavior: 'smooth'});
+                mediaContainer.innerHTML = `
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F.jpg" class="w-full h-full object-cover opacity-20 blur-2xl scale-110 grayscale">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/70">
+                        <i class="fa-solid fa-lock text-3xl text-gray-300 mb-2"></i>
+                        <span class="font-bold text-white bg-of-blue px-4 py-2 rounded-full text-[11px] uppercase tracking-wider shadow-lg">Elige tu pack para ver completo</span>
+                        <span class="text-[10px] text-gray-300 mt-1.5 font-medium">Visualización única (5s) agotada</span>
+                    </div>
+                `;
+            }
+        }
+
+        // ========================================================
+        // TECLADO CUSTOMIZADO DM
+        // ========================================================
         let isShift = false;
 
         function showCustomKeyboard(e) {
-            if(e) e.preventDefault(); // Impede focar nativamente e subir o teclado OS
+            if(e) e.preventDefault();
             
             const kb = document.getElementById('custom-keyboard');
             kb.classList.remove('h-0');
             kb.classList.add('h-[260px]');
             
-            // Faz a área de chat "encolher" na mesma medida do teclado
-            const chatMain = document.getElementById('chat-main-container');
-            
-            // Loop a 60fps para o scroll acompanhar perfeitamente a animação css do teclado (300ms)
             let start = Date.now();
             function scrollStep() {
                 scrollToBottom();
@@ -794,7 +883,6 @@
             scrollStep();
         }
 
-        // Esconde o teclado ao clicar fora
         document.addEventListener('DOMContentLoaded', () => {
             const chatMain = document.getElementById('chat-main-container');
             if(chatMain) chatMain.addEventListener('click', hideCustomKeyboard);
@@ -804,7 +892,7 @@
             const input = document.getElementById('dm-input');
             if (isShift) {
                 char = char.toUpperCase();
-                toggleShift(false); // Retorna pra minúsculo após uma letra igual iOS
+                toggleShift(false);
             }
             input.value += char;
             triggerInputEvent();
@@ -849,8 +937,14 @@
         }
 
         // ========================================================
-        // EXIT INTENT & SISTEMA DE DOWNSELL
+        // EXIT INTENT
         // ========================================================
+        function triggerDownsell() {
+            if (downsellTriggered || userHasPaid) return;
+            downsellTriggered = true;
+            clearTimeout(dmDownsellTimer);
+            clearTimeout(landingDownsellTimer);
+        }
 
         history.replaceState({ page: 'trap' }, '');
         history.pushState({ page: 'main' }, '');
@@ -883,33 +977,9 @@
             }
         });
 
-        const downsellMessages = [
-            { type: 'text', content: "Ay amor, vi que te quedaste a medias 🥺" },
-            { type: 'text', content: "Se nota que tienes ganas... te haré una rebaja increíble solo por hoy." },
-            { type: 'video', content: "https://pub-c737fc13f75b440d8a7a6655e86b4ead.r2.dev/1_5042113862577423768.mp4", caption: null },
-            { type: 'text', content: "Te dejo mi pack más ardiente por solo <strong>$60 MXN</strong>. Mira arriba un pedacito de lo que te vas a perder si te vas 😈👇" }
-        ];
-
-        function triggerDownsell() {
-            if (downsellTriggered || userHasPaid) return;
-            downsellTriggered = true;
-            
-            clearTimeout(dmDownsellTimer);
-            clearTimeout(landingDownsellTimer);
-
-            if (currentView !== 'dm') {
-                showIGNotification("camila.ofc", "Ay amor, vi que te quedaste a medias 🥺");
-            }
-
-            processBotQueue(downsellMessages, () => {
-                generateSPEIForDownsell();
-            });
-        }
-
         // ========================================================
-        // INÍCIO AUTOMÁTICO & SISTEMA DE NOTIFICAÇÃO DO INSTAGRAM
+        // INÍCIO AUTOMÁTICO & NOTIFICAÇÃO
         // ========================================================
-        
         function startAutoFlow() {
             if (autoFlowStarted) return;
             autoFlowStarted = true;
@@ -951,10 +1021,6 @@
             hideIGNotification();
             openDM();
         }
-
-        // ========================================================
-        // FUNÇÕES PADRÕES (Interface)
-        // ========================================================
 
         function closeAllModals() {
             isModalOpen = false;
@@ -1116,7 +1182,7 @@
             const list = document.getElementById('comments-list');
             const commentHTML = `
                 <div class="flex gap-3 fade-in">
-                    <img src="https://ui-avatars.com/api/?name=Tu+Perfil&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full object-cover">
+                    <img src="https://i.pravatar.cc/150?img=11" class="w-9 h-9 rounded-full object-cover">
                     <div class="flex-1 text-[14px] text-white leading-snug">
                         <span class="font-semibold mr-1">tu_perfil</span>${text}<br>
                         <span class="text-[12px] text-ig-gray mt-1 font-semibold inline-block">Ahora &nbsp;&nbsp; Responder</span>
@@ -1159,26 +1225,26 @@
         }
 
         const botMessagesStep1 = [
-            { type: 'text', content: "Holiii bb ❤️" },
-            { type: 'text', content: "Hola, ¿viniste a ver mi conchita? 😈" }
+            { type: 'text', content: "Holiii bb" },
+            { type: 'text', content: "Hola, ¿viniste a ver mi conchita?" }
         ];
 
         const botMessagesStep2 = [
-            { type: 'text', content: "Está bien amor 🫶" },
+            { type: 'text', content: "Está bien amor" },
             { type: 'video', content: "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/1_5042113862577423770.mp4", caption: null },
-            { type: 'text', content: "¿Te gustó? Tengo mucho más. 🙈" }
+            { type: 'text', content: "¿Te gustó? Tengo mucho más." }
         ];
 
         const botMessagesStep3 = [
-            { type: 'text', content: "La vdd no me doy abasto para contestarle a todos los que me escriben por aquí 🥺" },
+            { type: 'text', content: "La vdd no me doy abasto para contestarle a todos los que me escriben por aquí" },
             { type: 'text', content: "Si quieres ver mi contenido completo o hablar conmigo por WhatsApp para hacer videollamada..." },
             { type: 'text', content: "...o hasta agendar un encuentro presencial, puedes comprar tu acceso directo conmigo por aquí mismo." },
-            { type: 'text', content: `✨ ELIGE TU PACK ✨<br><br>🔸 BÁSICO — $50 🇲🇽<br>• 7 Archivos (Fotos y vídeos suaves)<br><br>🔥 PACK FULL — $110 🇲🇽 (Más vendido)<br>• +105 Archivos: Sexo Rudo, Anal y Orgías<br><br>👑 VIP TOTAL — $230 🇲🇽<br>• Pack Full + WhatsApp + Videollamada (15 min)<br>• Fetichismos, grabaciones mías teniendo orgasmos múltiples<br><br>💎 ELITE ENCUENTROS — $450 🇲🇽<br>• WhatsApp directo para agendar cita presencial<br>• Todos los packs anteriores + Vídeos raros, 2 amigas y acervo de 3 años` },
-            { type: 'text', content: "¿Cuál vas a querer bb? 🙈" }
+            { type: 'text', content: "✨ ELIGE TU PACK ✨<br><br>🔸 BÁSICO — $50 🇲🇽<br>• 7 Archivos (Fotos y vídeos suaves)<br><br>🔥 PACK FULL — $110 🇲🇽 (Más vendido)<br>• +105 Archivos: Sexo Rudo, Anal y Orgías<br><br>👑 VIP TOTAL — $230 🇲🇽<br>• Pack Full + WhatsApp + Videollamada (15 min)<br>• Fetichismos, grabaciones mías teniendo orgasmos múltiples<br><br>💎 ELITE ENCUENTROS — $450 🇲🇽<br>• WhatsApp directo para agendar cita presencial<br>• Todos los packs anteriores + Vídeos raros, 2 amigas y acervo de 3 años" },
+            { type: 'text', content: "¿Cuál vas a querer bb?" }
         ];
 
         const botMessagesStep4 = [
-            { type: 'text', content: "Ok amor, te mandaré el SPEI. Solo manda el pago y te envío mi WhatsApp y mis videos por aquí mismo ❤️" }
+            { type: 'text', content: "Ok amor, te mandaré el SPEI. Solo manda el pago y te envío mi WhatsApp y mis videos por aquí mismo" }
         ];
 
         function sendDM() {
@@ -1557,10 +1623,11 @@
                     <div class="flex gap-2 fade-in mt-1 mb-4">
                         <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
                         <div class="bg-[#262626] text-white text-[15px] py-3 px-4 rounded-3xl rounded-tl-sm border border-[#363636] max-w-[85%] w-full shadow-lg">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="bg-of-blue text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">PAGO SPEI</span>
-                            </div>
-                            <p class="text-[14px] text-gray-300 mb-3 leading-snug">🏦 Banco: <strong class="text-white">STP (Sistema de Transferencia y Pagos)</strong><br>💠 Nombre: <strong class="text-white">Camila Fagundes</strong><br>🔑 CLABE 👇</p>
+                            <p class="text-[14px] text-gray-300 mb-3 leading-snug">
+                                Banco: STP (Sistema de Transferencia y Pagos)<br>
+                                Nombre: Camila Fagundes<br>
+                                CLABE 👇
+                            </p>
                             <div class="bg-black rounded-lg p-3 text-center mb-3 border border-[#363636]">
                                 <span class="font-mono text-[16px] sm:text-lg font-bold tracking-widest break-all text-ig-blue">${codeText}</span>
                             </div>
@@ -1584,64 +1651,6 @@
 
                 if (txId) {
                     startDMPaymentPolling(txId, 'dm-payment-status');
-                }
-            } catch (error) {
-                removeTypingIndicator();
-                isBotTyping = false;
-            }
-        }
-        
-        async function generateSPEIForDownsell() {
-            showTypingIndicator();
-            try {
-                const response = await fetch(`${BASE_URL}/api/pix/generate`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_TOKEN },
-                    body: JSON.stringify({
-                        click_id: currentClickId,
-                        value_cents: 6000,
-                        product: { name: "Downsell DM 60" },
-                        currency: 'MXN'
-                    })
-                });
-
-                removeTypingIndicator();
-                let codeText = "646180111234567890";
-                let txId = null;
-
-                if (response.ok) {
-                    const data = await response.json();
-                    codeText = data.qr_code_text || codeText;
-                    txId = data.transaction_id || data.id;
-                }
-
-                const chat = document.getElementById('chat-messages');
-                const clabeBubble = `
-                    <div class="flex gap-2 fade-in mt-1 mb-4">
-                        <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
-                        <div class="bg-[#262626] text-white text-[15px] py-3 px-4 rounded-3xl rounded-tl-sm border border-[#363636] max-w-[85%] w-full shadow-lg">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase animate-pulse">PROMO $60 MXN</span>
-                            </div>
-                            <p class="text-[14px] text-gray-300 mb-3 leading-snug">🏦 Banco: <strong class="text-white">STP (Sistema de Transferencia y Pagos)</strong><br>💠 Nombre: <strong class="text-white">Camila Fagundes</strong><br>🔑 CLABE 👇</p>
-                            <div class="bg-black rounded-lg p-3 text-center mb-3 border border-[#363636]">
-                                <span class="font-mono text-[16px] sm:text-lg font-bold tracking-widest break-all text-ig-blue">${codeText}</span>
-                            </div>
-                            <button onclick="copyDMCLABE(this, '${codeText}')" class="bg-ig-blue hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-[14px] w-full transition-colors flex items-center justify-center gap-2 mb-3 active:scale-95">
-                                <i class="fa-regular fa-copy"></i> COPIAR CLABE
-                            </button>
-                            <div id="dm-payment-status-downsell" class="bg-yellow-500/10 text-yellow-500 text-[12px] py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 font-medium border border-yellow-500/20 text-center">
-                                <i class="fa-solid fa-spinner fa-spin"></i> Esperando confirmación...
-                            </div>
-                        </div>
-                    </div>
-                `;
-                chat.insertAdjacentHTML('beforeend', clabeBubble);
-                scrollToBottom();
-                isBotTyping = false;
-
-                if (txId) {
-                    startDMPaymentPolling(txId, 'dm-payment-status-downsell');
                 }
             } catch (error) {
                 removeTypingIndicator();
@@ -1712,10 +1721,10 @@
                             clearInterval(dmPolling);
                             clearTimeout(dmDownsellTimer);
                             if (statusEl) {
-                                statusEl.innerHTML = '<span class="text-green-400 font-bold"><i class="fa-solid fa-check"></i> ¡Pago confirmado!</span>';
+                                statusEl.innerHTML = '<span class="text-green-400 font-bold"><i class="fa-solid fa-check"></i> Pago confirmado</span>';
                                 statusEl.className = "bg-green-500/10 text-green-400 text-[12px] py-2 px-2 rounded-lg border border-green-500/20 text-center";
                             }
-                            appendBotMessage("¡Listo mi amor! ❤️ Pago confirmado con éxito. Escríbeme ahora mismo a mi WhatsApp para enviarte todo: <br><br><a href='https://wa.me/' target='_blank' class='text-ig-blue underline font-bold'>👉 CLIC AQUÍ PARA ABRIR WHATSAPP</a>");
+                            appendBotMessage("Listo mi amor! Pago confirmado con éxito. Escríbeme ahora mismo a mi WhatsApp para enviarte todo: <br><br><a href='https://wa.me/' target='_blank' class='text-ig-blue underline font-bold'>CLIC AQUÍ PARA ABRIR WHATSAPP</a>");
                         }
                     }
                 } catch (e) {}
