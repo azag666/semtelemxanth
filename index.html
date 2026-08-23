@@ -319,8 +319,8 @@
             </div>
         </header>
         
-        <!-- REMOVIDO transition-all para evitar pulos. PB baseado apenas no input fixo -->
-        <main id="chat-main-container" class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto pb-[80px]">
+        <!-- Contêiner principal com padding dinâmico via style inline para sincronizar perfeitamente com teclado -->
+        <main id="chat-main-container" class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto transition-[padding-bottom] duration-300 ease-out" style="padding-bottom: 80px;">
             <div class="flex flex-col items-center justify-center mb-8 mt-4">
                 <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-24 h-24 rounded-full mb-3 object-cover">
                 <span class="text-white font-bold text-xl">Camila 💋✨</span>
@@ -329,8 +329,6 @@
                 <button onclick="closeDM()" class="bg-[#363636] text-white font-semibold py-1.5 px-4 rounded-lg text-sm mt-4 hover:bg-[#262626]">Ver perfil</button>
             </div>
             <div id="chat-messages" class="flex flex-col gap-3"></div>
-            <!-- ESPAÇADOR DINÂMICO DO TECLADO -->
-            <div id="keyboard-spacer" class="h-0 transition-[height] duration-300 ease-out shrink-0 w-full"></div>
         </main>
 
         <!-- WRAPPER DO INPUT E TECLADO CUSTOMIZADO -->
@@ -351,7 +349,7 @@
             </div>
             
             <!-- TECLADO CUSTOMIZADO (iOS Style) -->
-            <div id="custom-keyboard" class="h-0 overflow-hidden transition-all duration-300 bg-[#1c1c1e] flex flex-col justify-end w-full select-none">
+            <div id="custom-keyboard" class="h-0 overflow-hidden transition-all duration-300 ease-out bg-[#1c1c1e] flex flex-col justify-end w-full select-none">
                 <div class="p-2 pb-6 flex flex-col gap-2.5">
                     <!-- Row 1 -->
                     <div class="flex justify-center gap-1.5 w-full">
@@ -764,12 +762,8 @@
             kb.classList.remove('h-0');
             kb.classList.add('h-[260px]');
             
-            // Cresce o espaçador pra empurrar a tela naturalmente
-            const spacer = document.getElementById('keyboard-spacer');
-            if(spacer) {
-                spacer.classList.remove('h-0');
-                spacer.classList.add('h-[260px]');
-            }
+            const chatMain = document.getElementById('chat-main-container');
+            chatMain.style.paddingBottom = '340px';
             
             // Faz o scroll acompanhar a animação de abertura do teclado (350ms)
             let start = Date.now();
@@ -787,11 +781,8 @@
             kb.classList.add('h-0');
             kb.classList.remove('h-[260px]');
             
-            const spacer = document.getElementById('keyboard-spacer');
-            if(spacer) {
-                spacer.classList.remove('h-[260px]');
-                spacer.classList.add('h-0');
-            }
+            const chatMain = document.getElementById('chat-main-container');
+            chatMain.style.paddingBottom = '80px';
         }
 
         // Esconde o teclado ao clicar fora
