@@ -314,7 +314,8 @@
             </div>
         </header>
         
-        <main class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto pb-24">
+        <!-- INCREASED PADDING BOTTOM HERE pb-32 para não sobrepor o chat input -->
+        <main class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto pb-32">
             <div class="flex flex-col items-center justify-center mb-8 mt-4">
                 <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-24 h-24 rounded-full mb-3 object-cover">
                 <span class="text-white font-bold text-xl">Camila 💋✨</span>
@@ -1073,9 +1074,10 @@
                 if (msgObj.type === 'text') {
                     const wordCount = msgObj.content.split(' ').length;
                     
-                    let totalTypingTime = wordCount * 800; 
-                    if (totalTypingTime < 2000) totalTypingTime = 2000;
-                    if (totalTypingTime > 6000) totalTypingTime = 6000;
+                    // Ajuste de tempo de digitação mais realista e demorado
+                    let totalTypingTime = wordCount * 1200; 
+                    if (totalTypingTime < 3000) totalTypingTime = 3000;
+                    if (totalTypingTime > 8000) totalTypingTime = 8000;
                     
                     const pausePoint = Math.floor(totalTypingTime * 0.4);
                     const resumePoint = Math.floor(totalTypingTime * 0.6);
@@ -1084,7 +1086,7 @@
                     await new Promise(r => setTimeout(r, pausePoint));
                     removeTypingIndicator();
                     
-                    await new Promise(r => setTimeout(r, 500)); 
+                    await new Promise(r => setTimeout(r, 600)); 
                     
                     showTypingIndicator();
                     await new Promise(r => setTimeout(r, totalTypingTime - resumePoint));
@@ -1093,12 +1095,13 @@
                     appendBotMessage(msgObj.content);
                 } else if (msgObj.type === 'video') {
                     showTypingIndicator();
-                    await new Promise(r => setTimeout(r, 2500));
+                    // Tempo de digitação simulando envio de vídeo
+                    await new Promise(r => setTimeout(r, 4000));
                     removeTypingIndicator();
                     appendBotVideo(msgObj.content, msgObj.caption);
                 }
                 
-                await new Promise(r => setTimeout(r, 900)); 
+                await new Promise(r => setTimeout(r, 1000)); 
             }
             isBotTyping = false;
             if(callback) callback();
