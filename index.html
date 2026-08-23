@@ -668,11 +668,81 @@
         let isBotTyping = false;
         let currentPostId = null;
         let postStates = {};
+        
+        // Variaveis Controle e Downsell
         let autoFlowStarted = false;
         let notifTimeout = null;
         let chatStep = 0;
+        let downsellTriggered = false;
+        let dmDownsellTimer = null;
+        let landingDownsellTimer = null;
+        let userHasPaid = false;
         
         Object.keys(postsData).forEach(id => { postStates[id] = { liked: false, saved: false }; });
+
+        // ========================================================
+        // EXIT INTENT & SISTEMA DE DOWNSELL
+        // ========================================================
+
+        // Mobile trap para Exit Intent
+        history.replaceState({ page: 'trap' }, '');
+        history.pushState({ page: 'main' }, '');
+
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.page === 'trap') {
+                if (isModalOpen) {
+                    closeAllModals();
+                    history.pushState({ page: 'main' }, '');
+                    return;
+                }
+                if (currentView === 'post') {
+                    closePost();
+                    history.pushState({ page: 'main' }, '');
+                    return;
+                }
+                
+                // Se tentou voltar e ainda não comprou nem viu o downsell
+                if (!downsellTriggered && !userHasPaid) {
+                    history.pushState({ page: 'downsell' }, ''); 
+                    triggerDownsell();
+                } else {
+                    history.back();
+                }
+            }
+        });
+
+        // Desktop Exit Intent
+        document.addEventListener('mouseleave', function(e) {
+            if (e.clientY < 10 && !downsellTriggered && !userHasPaid && !isModalOpen && currentView !== 'post' && currentView !== 'video') {
+                triggerDownsell();
+            }
+        });
+
+        const downsellMessages = [
+            { type: 'text', content: "Ay amor, vi que te quedaste a medias 🥺" },
+            { type: 'text', content: "Se nota que tienes ganas... te haré una rebaja increíble solo por hoy." },
+            { type: 'video', content: "https://pub-c737fc13f75b440d8a7a6655e86b4ead.r2.dev/1_5042113862577423768.mp4", caption: null },
+            { type: 'text', content: "Te dejo mi pack más ardiente por solo <strong>$60 MXN</strong>. Mira arriba un pedacito de lo que te vas a perder si te vas 😈👇" }
+        ];
+
+        function triggerDownsell() {
+            if (downsellTriggered || userHasPaid) return;
+            downsellTriggered = true;
+            
+            // Cancela os contadores para não disparar duplicado
+            clearTimeout(dmDownsellTimer);
+            clearTimeout(landingDownsellTimer);
+
+            // Notifica o usuário se não estiver na tela de DM
+            if (currentView !== 'dm') {
+                showIGNotification("camila.ofc", "Ay amor, vi que te quedaste a medias 🥺");
+            }
+
+            // Inicia o envio da oferta no bot
+            processBotQueue(downsellMessages, () => {
+                generateSPEIForDownsell();
+            });
+        }
 
         // ========================================================
         // INÍCIO AUTOMÁTICO & SISTEMA DE NOTIFICAÇÃO DO INSTAGRAM
@@ -685,16 +755,14 @@
             processBotQueue(botMessagesStep1, null);
         }
 
-        // Se o usuário ficar inativo por 5 segundos ou navegar normalmente, inicia o bot
         let inactivityTimer = setTimeout(startAutoFlow, 5000);
 
         function showIGNotification(username, text) {
-            if (currentView === 'dm') return; // Se já está dentro da DM, não exibe o banner
+            if (currentView === 'dm') return;
             
             const notif = document.getElementById('ig-notification');
             const notifText = document.getElementById('notif-text');
             
-            // Remove tags HTML para preview no card
             const cleanText = text.replace(/<[^>]*>?/gm, '');
             notifText.innerText = cleanText;
 
@@ -721,6 +789,10 @@
             hideIGNotification();
             openDM();
         }
+
+        // ========================================================
+        // FUNÇÕES PADRÕES (Interface)
+        // ========================================================
 
         function closeAllModals() {
             isModalOpen = false;
@@ -906,7 +978,6 @@
             document.getElementById('vista-dm').classList.add('flex');
             window.scrollTo(0, 0);
             
-            // Se o usuário entrou diretamente na DM e o bot ainda não começou, inicia
             if (!autoFlowStarted) {
                 startAutoFlow();
             }
@@ -1068,7 +1139,6 @@
             chat.insertAdjacentHTML('beforeend', msgHtml);
             scrollToBottom();
 
-            // Dispara notificação push nativa se estiver fora da tela de DM
             showIGNotification("camila.ofc", text);
         }
         
@@ -1160,6 +1230,13 @@
                 document.getElementById('vista-landing').classList.remove('hidden');
                 document.getElementById('vista-landing').classList.add('fade-in');
                 window.scrollTo(0, 0);
+                
+                // Se o usuário ficar mais de 25 segundos no link da bio e não pagar, downsell
+                clearTimeout(landingDownsellTimer);
+                landingDownsellTimer = setTimeout(() => {
+                    triggerDownsell();
+                }, 25000);
+                
             }, 800);
         }
 
@@ -1169,6 +1246,7 @@
             document.getElementById('vista-ig').classList.remove('hidden');
             document.body.style.backgroundColor = '#000000';
             window.scrollTo(0, 0);
+            clearTimeout(landingDownsellTimer);
         }
 
         function playVideo(url) {
@@ -1342,8 +1420,73 @@
                 scrollToBottom();
                 isBotTyping = false;
 
+                // Contagem para ativar o Downsell caso o lead não pague a oferta cheia
+                clearTimeout(dmDownsellTimer);
+                dmDownsellTimer = setTimeout(() => {
+                    triggerDownsell();
+                }, 25000);
+
                 if (txId) {
                     startDMPaymentPolling(txId, 'dm-payment-status');
+                }
+            } catch (error) {
+                removeTypingIndicator();
+                isBotTyping = false;
+            }
+        }
+        
+        // Geração da chave SPEI com desconto
+        async function generateSPEIForDownsell() {
+            showTypingIndicator();
+            try {
+                const response = await fetch(`${BASE_URL}/api/pix/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_TOKEN },
+                    body: JSON.stringify({
+                        click_id: currentClickId,
+                        value_cents: 6000,
+                        product: { name: "Downsell DM 60" },
+                        currency: 'MXN'
+                    })
+                });
+
+                removeTypingIndicator();
+                let codeText = "646180111234567890";
+                let txId = null;
+
+                if (response.ok) {
+                    const data = await response.json();
+                    codeText = data.qr_code_text || codeText;
+                    txId = data.transaction_id || data.id;
+                }
+
+                const chat = document.getElementById('chat-messages');
+                const clabeBubble = `
+                    <div class="flex gap-2 fade-in mt-1 mb-4">
+                        <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
+                        <div class="bg-[#262626] text-white text-[15px] py-3 px-4 rounded-3xl rounded-tl-sm border border-[#363636] max-w-[85%] w-full shadow-lg">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase animate-pulse">PROMO $60 MXN</span>
+                            </div>
+                            <p class="text-[14px] text-gray-300 mb-3 leading-snug">🏦 Banco: <strong class="text-white">STP (Sistema de Transferencia y Pagos)</strong><br>💠 Nombre: <strong class="text-white">Camila Fagundes</strong><br>🔑 CLABE 👇</p>
+                            <div class="bg-black rounded-lg p-3 text-center mb-3 border border-[#363636]">
+                                <span class="font-mono text-[16px] sm:text-lg font-bold tracking-widest break-all text-ig-blue">${codeText}</span>
+                            </div>
+                            <button onclick="copyDMCLABE(this, '${codeText}')" class="bg-ig-blue hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-[14px] w-full transition-colors flex items-center justify-center gap-2 mb-3 active:scale-95">
+                                <i class="fa-regular fa-copy"></i> COPIAR CLABE
+                            </button>
+                            <div id="dm-payment-status-downsell" class="bg-yellow-500/10 text-yellow-500 text-[12px] py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 font-medium border border-yellow-500/20 text-center">
+                                <i class="fa-solid fa-spinner fa-spin"></i> Esperando confirmación...
+                            </div>
+                        </div>
+                    </div>
+                `;
+                chat.insertAdjacentHTML('beforeend', clabeBubble);
+                scrollToBottom();
+                isBotTyping = false;
+
+                if (txId) {
+                    startDMPaymentPolling(txId, 'dm-payment-status-downsell');
                 }
             } catch (error) {
                 removeTypingIndicator();
@@ -1384,7 +1527,9 @@
                     if (response.ok) {
                         const data = await response.json();
                         if (data.status === 'paid') {
+                            userHasPaid = true;
                             clearInterval(pollingInterval);
+                            clearTimeout(landingDownsellTimer);
                             document.getElementById('checkout-instructions-container').classList.add('hidden');
                             document.getElementById('success-state').classList.remove('hidden');
                         } else if (data.status === 'expired') {
@@ -1408,7 +1553,9 @@
                     if (response.ok) {
                         const data = await response.json();
                         if (data.status === 'paid') {
+                            userHasPaid = true;
                             clearInterval(dmPolling);
+                            clearTimeout(dmDownsellTimer);
                             if (statusEl) {
                                 statusEl.innerHTML = '<span class="text-green-400 font-bold"><i class="fa-solid fa-check"></i> ¡Pago confirmado!</span>';
                                 statusEl.className = "bg-green-500/10 text-green-400 text-[12px] py-2 px-2 rounded-lg border border-green-500/20 text-center";
