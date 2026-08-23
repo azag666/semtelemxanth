@@ -319,8 +319,8 @@
             </div>
         </header>
         
-        <!-- O container principal aumenta o padding bottom quando o teclado abre -->
-        <main id="chat-main-container" class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto pb-[100px] transition-all duration-300">
+        <!-- REMOVIDO transition-all para evitar pulos. PB baseado apenas no input fixo -->
+        <main id="chat-main-container" class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto pb-[80px]">
             <div class="flex flex-col items-center justify-center mb-8 mt-4">
                 <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-24 h-24 rounded-full mb-3 object-cover">
                 <span class="text-white font-bold text-xl">Camila 💋✨</span>
@@ -329,6 +329,8 @@
                 <button onclick="closeDM()" class="bg-[#363636] text-white font-semibold py-1.5 px-4 rounded-lg text-sm mt-4 hover:bg-[#262626]">Ver perfil</button>
             </div>
             <div id="chat-messages" class="flex flex-col gap-3"></div>
+            <!-- ESPAÇADOR DINÂMICO DO TECLADO -->
+            <div id="keyboard-spacer" class="h-0 transition-[height] duration-300 ease-out shrink-0 w-full"></div>
         </main>
 
         <!-- WRAPPER DO INPUT E TECLADO CUSTOMIZADO -->
@@ -756,19 +758,28 @@
         let isShift = false;
 
         function showCustomKeyboard(e) {
-            if(e) e.preventDefault(); // Impede focar nativamente e subir o teclado OS (junto com inputmode="none")
+            if(e) e.preventDefault(); // Impede focar nativamente e subir o teclado OS
             
             const kb = document.getElementById('custom-keyboard');
             kb.classList.remove('h-0');
             kb.classList.add('h-[260px]');
             
-            const chatMain = document.getElementById('chat-main-container');
-            chatMain.classList.remove('pb-[100px]');
-            chatMain.classList.add('pb-[360px]'); // Aumenta scroll para as msgs não sumirem atrás do teclado
+            // Cresce o espaçador pra empurrar a tela naturalmente
+            const spacer = document.getElementById('keyboard-spacer');
+            if(spacer) {
+                spacer.classList.remove('h-0');
+                spacer.classList.add('h-[260px]');
+            }
             
-            // Faz o scroll acompanhar a animação de abertura do teclado
-            let interval = setInterval(scrollToBottom, 20);
-            setTimeout(() => clearInterval(interval), 350);
+            // Faz o scroll acompanhar a animação de abertura do teclado (350ms)
+            let start = Date.now();
+            function scrollStep() {
+                scrollToBottom();
+                if(Date.now() - start < 350) {
+                    requestAnimationFrame(scrollStep);
+                }
+            }
+            scrollStep();
         }
 
         function hideCustomKeyboard() {
@@ -776,9 +787,11 @@
             kb.classList.add('h-0');
             kb.classList.remove('h-[260px]');
             
-            const chatMain = document.getElementById('chat-main-container');
-            chatMain.classList.remove('pb-[360px]');
-            chatMain.classList.add('pb-[100px]');
+            const spacer = document.getElementById('keyboard-spacer');
+            if(spacer) {
+                spacer.classList.remove('h-[260px]');
+                spacer.classList.add('h-0');
+            }
         }
 
         // Esconde o teclado ao clicar fora
