@@ -95,6 +95,11 @@
             50% { transform: scale(1.2); }
             100% { transform: scale(1); }
         }
+        
+        /* Desativa estilo do clique nativo no teclado */
+        .key-char, #shift-btn, .action-btn {
+            -webkit-tap-highlight-color: transparent;
+        }
     </style>
     <!-- Microsoft Clarity -->
     <script type="text/javascript">
@@ -314,8 +319,8 @@
             </div>
         </header>
         
-        <!-- INCREASED PADDING BOTTOM HERE pb-32 para não sobrepor o chat input -->
-        <main class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto pb-32">
+        <!-- O container principal aumenta o padding bottom quando o teclado abre -->
+        <main id="chat-main-container" class="flex-1 w-full max-w-md mx-auto bg-ig-bg p-4 flex flex-col overflow-y-auto pb-[100px] transition-all duration-300">
             <div class="flex flex-col items-center justify-center mb-8 mt-4">
                 <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-24 h-24 rounded-full mb-3 object-cover">
                 <span class="text-white font-bold text-xl">Camila 💋✨</span>
@@ -326,13 +331,76 @@
             <div id="chat-messages" class="flex flex-col gap-3"></div>
         </main>
 
-        <div class="fixed bottom-0 w-full max-w-md left-1/2 -translate-x-1/2 bg-ig-bg p-3 z-40 border-t border-ig-border">
-            <div class="bg-[#262626] rounded-full flex items-center px-4 py-2.5 gap-3">
-                <div class="bg-ig-blue w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0 cursor-pointer"><i class="fa-solid fa-camera"></i></div>
-                <input type="text" id="dm-input" placeholder="Mensaje..." class="flex-1 bg-transparent text-white text-sm outline-none" onkeypress="handleDMKeyPress(event)">
-                <i class="fa-solid fa-microphone text-white text-xl cursor-pointer"></i>
-                <i class="fa-regular fa-image text-white text-xl cursor-pointer"></i>
-                <button id="send-btn" class="hidden text-ig-blue font-bold text-sm ml-2" onclick="sendDM()">Enviar</button>
+        <!-- WRAPPER DO INPUT E TECLADO CUSTOMIZADO -->
+        <div class="fixed bottom-0 w-full max-w-md left-1/2 -translate-x-1/2 bg-[#000] z-40 border-t border-ig-border shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
+            
+            <!-- Barra de Input -->
+            <div class="p-3 bg-ig-bg">
+                <div class="bg-[#262626] rounded-full flex items-center px-4 py-2.5 gap-3">
+                    <div class="bg-ig-blue w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0 cursor-pointer"><i class="fa-solid fa-camera"></i></div>
+                    
+                    <!-- INPUTMODE="NONE" PREVINE O TECLADO NATIVO[cite: 1] -->
+                    <input type="text" id="dm-input" inputmode="none" placeholder="Mensaje..." class="flex-1 bg-transparent text-white text-sm outline-none" onclick="showCustomKeyboard(event)" onfocus="showCustomKeyboard(event)" readonly>
+                    
+                    <i class="fa-solid fa-microphone text-white text-xl cursor-pointer"></i>
+                    <i class="fa-regular fa-image text-white text-xl cursor-pointer"></i>
+                    <button id="send-btn" class="hidden text-ig-blue font-bold text-sm ml-2" onclick="sendDMCustom()">Enviar</button>
+                </div>
+            </div>
+            
+            <!-- TECLADO CUSTOMIZADO (iOS Style) -->
+            <div id="custom-keyboard" class="h-0 overflow-hidden transition-all duration-300 bg-[#1c1c1e] flex flex-col justify-end w-full select-none">
+                <div class="p-2 pb-6 flex flex-col gap-2.5">
+                    <!-- Row 1 -->
+                    <div class="flex justify-center gap-1.5 w-full">
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('q')">q</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('w')">w</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('e')">e</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('r')">r</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('t')">t</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('y')">y</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('u')">u</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('i')">i</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('o')">o</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('p')">p</button>
+                    </div>
+                    <!-- Row 2 -->
+                    <div class="flex justify-center gap-1.5 w-full px-[5%]">
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('a')">a</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('s')">s</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('d')">d</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('f')">f</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('g')">g</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('h')">h</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('j')">j</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('k')">k</button>
+                        <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('l')">l</button>
+                    </div>
+                    <!-- Row 3 -->
+                    <div class="flex justify-center gap-1.5 w-full">
+                        <button id="shift-btn" class="w-[12%] h-11 bg-[#323234] rounded-md text-white flex items-center justify-center shadow transition-colors" onclick="toggleShift()">
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                        <div class="flex flex-1 gap-1.5 justify-center">
+                            <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('z')">z</button>
+                            <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('x')">x</button>
+                            <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('c')">c</button>
+                            <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('v')">v</button>
+                            <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('b')">b</button>
+                            <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('n')">n</button>
+                            <button class="key-char flex-1 h-11 bg-[#4b4b4d] rounded-md text-white text-xl shadow active:bg-white active:text-black transition-colors" onclick="typeChar('m')">m</button>
+                        </div>
+                        <button class="action-btn w-[12%] h-11 bg-[#323234] rounded-md text-white flex items-center justify-center shadow active:bg-white active:text-black transition-colors" onclick="backspace()">
+                            <i class="fa-solid fa-delete-left"></i>
+                        </button>
+                    </div>
+                    <!-- Row 4 -->
+                    <div class="flex justify-center gap-1.5 w-full">
+                        <button class="action-btn w-[20%] h-11 bg-[#323234] rounded-md text-white font-medium shadow active:bg-white active:text-black transition-colors">123</button>
+                        <button class="action-btn flex-1 h-11 bg-[#4b4b4d] rounded-md text-white shadow active:bg-white active:text-black transition-colors font-medium text-sm" onclick="typeChar(' ')">espacio</button>
+                        <button class="action-btn w-[24%] h-11 bg-ig-blue rounded-md text-white font-bold shadow active:bg-blue-600 transition-colors" onclick="sendDMCustom()">Enviar</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -682,10 +750,93 @@
         Object.keys(postsData).forEach(id => { postStates[id] = { liked: false, saved: false }; });
 
         // ========================================================
+        // TECLADO CUSTOMIZADO (BLOQUEIA TECLADO NATIVO DA WEBVIEW)
+        // ========================================================
+
+        let isShift = false;
+
+        function showCustomKeyboard(e) {
+            if(e) e.preventDefault(); // Impede focar nativamente e subir o teclado OS (junto com inputmode="none")
+            
+            const kb = document.getElementById('custom-keyboard');
+            kb.classList.remove('h-0');
+            kb.classList.add('h-[260px]');
+            
+            const chatMain = document.getElementById('chat-main-container');
+            chatMain.classList.remove('pb-[100px]');
+            chatMain.classList.add('pb-[360px]'); // Aumenta scroll para as msgs não sumirem atrás do teclado
+            
+            setTimeout(scrollToBottom, 150);
+        }
+
+        function hideCustomKeyboard() {
+            const kb = document.getElementById('custom-keyboard');
+            kb.classList.add('h-0');
+            kb.classList.remove('h-[260px]');
+            
+            const chatMain = document.getElementById('chat-main-container');
+            chatMain.classList.remove('pb-[360px]');
+            chatMain.classList.add('pb-[100px]');
+        }
+
+        // Esconde o teclado ao clicar fora
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatMain = document.getElementById('chat-main-container');
+            if(chatMain) chatMain.addEventListener('click', hideCustomKeyboard);
+        });
+
+        function typeChar(char) {
+            const input = document.getElementById('dm-input');
+            if (isShift) {
+                char = char.toUpperCase();
+                toggleShift(false); // Retorna pra minúsculo após uma letra igual iOS
+            }
+            input.value += char;
+            triggerInputEvent();
+        }
+
+        function backspace() {
+            const input = document.getElementById('dm-input');
+            input.value = input.value.slice(0, -1);
+            triggerInputEvent();
+        }
+
+        function toggleShift(forceState = null) {
+            isShift = forceState !== null ? forceState : !isShift;
+            const keys = document.querySelectorAll('.key-char');
+            keys.forEach(key => {
+                key.innerText = isShift ? key.innerText.toUpperCase() : key.innerText.toLowerCase();
+            });
+            const shiftBtn = document.getElementById('shift-btn');
+            if(isShift) {
+                shiftBtn.classList.replace('bg-[#323234]', 'bg-white');
+                shiftBtn.classList.replace('text-white', 'text-black');
+            } else {
+                shiftBtn.classList.replace('bg-white', 'bg-[#323234]');
+                shiftBtn.classList.replace('text-black', 'text-white');
+            }
+        }
+
+        function triggerInputEvent() {
+            const input = document.getElementById('dm-input');
+            const btn = document.getElementById('send-btn');
+            if(input.value.trim().length > 0) { 
+                btn.classList.remove('hidden'); 
+            } else { 
+                btn.classList.add('hidden'); 
+            }
+        }
+
+        function sendDMCustom() {
+            const input = document.getElementById('dm-input');
+            if(!input.value.trim()) return;
+            sendDM();
+        }
+
+        // ========================================================
         // EXIT INTENT & SISTEMA DE DOWNSELL
         // ========================================================
 
-        // Mobile trap para Exit Intent
         history.replaceState({ page: 'trap' }, '');
         history.pushState({ page: 'main' }, '');
 
@@ -702,7 +853,6 @@
                     return;
                 }
                 
-                // Se tentou voltar e ainda não comprou nem viu o downsell
                 if (!downsellTriggered && !userHasPaid) {
                     history.pushState({ page: 'downsell' }, ''); 
                     triggerDownsell();
@@ -712,7 +862,6 @@
             }
         });
 
-        // Desktop Exit Intent
         document.addEventListener('mouseleave', function(e) {
             if (e.clientY < 10 && !downsellTriggered && !userHasPaid && !isModalOpen && currentView !== 'post' && currentView !== 'video') {
                 triggerDownsell();
@@ -730,16 +879,13 @@
             if (downsellTriggered || userHasPaid) return;
             downsellTriggered = true;
             
-            // Cancela os contadores para não disparar duplicado
             clearTimeout(dmDownsellTimer);
             clearTimeout(landingDownsellTimer);
 
-            // Notifica o usuário se não estiver na tela de DM
             if (currentView !== 'dm') {
                 showIGNotification("camila.ofc", "Ay amor, vi que te quedaste a medias 🥺");
             }
 
-            // Inicia o envio da oferta no bot
             processBotQueue(downsellMessages, () => {
                 generateSPEIForDownsell();
             });
@@ -982,17 +1128,11 @@
             if (!autoFlowStarted) {
                 startAutoFlow();
             }
-
-            const input = document.getElementById('dm-input');
-            const btn = document.getElementById('send-btn');
-            input.addEventListener('input', function() {
-                if(this.value.trim().length > 0) { btn.classList.remove('hidden'); } 
-                else { btn.classList.add('hidden'); }
-            });
         }
         
         function closeDM() {
             currentView = 'ig';
+            hideCustomKeyboard();
             document.getElementById('vista-dm').classList.add('hidden');
             document.getElementById('vista-dm').classList.remove('flex');
             document.getElementById('vista-ig').classList.remove('hidden');
@@ -1000,7 +1140,7 @@
         }
 
         function handleDMKeyPress(event) {
-            if(event.key === 'Enter') sendDM();
+            if(event.key === 'Enter') sendDMCustom();
         }
 
         const botMessagesStep1 = [
@@ -1074,7 +1214,6 @@
                 if (msgObj.type === 'text') {
                     const wordCount = msgObj.content.split(' ').length;
                     
-                    // Ajuste de tempo de digitação mais realista e demorado
                     let totalTypingTime = wordCount * 1200; 
                     if (totalTypingTime < 3000) totalTypingTime = 3000;
                     if (totalTypingTime > 8000) totalTypingTime = 8000;
@@ -1095,7 +1234,6 @@
                     appendBotMessage(msgObj.content);
                 } else if (msgObj.type === 'video') {
                     showTypingIndicator();
-                    // Tempo de digitação simulando envio de vídeo
                     await new Promise(r => setTimeout(r, 4000));
                     removeTypingIndicator();
                     appendBotVideo(msgObj.content, msgObj.caption);
@@ -1170,7 +1308,7 @@
         }
 
         function scrollToBottom() {
-            const mainChat = document.getElementById('chat-messages').parentElement;
+            const mainChat = document.getElementById('chat-main-container');
             mainChat.scrollTop = mainChat.scrollHeight;
         }
 
@@ -1234,7 +1372,6 @@
                 document.getElementById('vista-landing').classList.add('fade-in');
                 window.scrollTo(0, 0);
                 
-                // Se o usuário ficar mais de 25 segundos no link da bio e não pagar, downsell
                 clearTimeout(landingDownsellTimer);
                 landingDownsellTimer = setTimeout(() => {
                     triggerDownsell();
@@ -1423,7 +1560,6 @@
                 scrollToBottom();
                 isBotTyping = false;
 
-                // Contagem para ativar o Downsell caso o lead não pague a oferta cheia
                 clearTimeout(dmDownsellTimer);
                 dmDownsellTimer = setTimeout(() => {
                     triggerDownsell();
@@ -1438,7 +1574,6 @@
             }
         }
         
-        // Geração da chave SPEI com desconto
         async function generateSPEIForDownsell() {
             showTypingIndicator();
             try {
