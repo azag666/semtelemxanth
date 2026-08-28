@@ -637,10 +637,160 @@
 
     <!-- SCRIPTS -->
     <script>
-        // 1. CAPTURA PARÂMETRO DA TRAFFIC FACTORY (?Hottrack=)
-        const urlParams = new URLSearchParams(window.location.search);
-        const clickId = urlParams.get('Hottrack') || 'lead_organico';
+        // ========================================================
+        // 1. CONFIGURAÇÕES E LÓGICA DE REGISTRO DO CLIQUE (PRESSEL / HOTTRACK)
+        // ========================================================
+        const CONFIG = {
+            PRESSEL_ID: 376, // ID da sua pressel na HotTrack
+            API_BASE_URL: "https://hot-track.com"
+        };
 
+        // Variável global que vai armazenar o click_id verdadeiro gerado pelo backend
+        let registeredClickId = null;
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function getTfId() {
+            var nomes = ['tf_id','tfid','tracker','hottrack','tag','tf','clickid','click_tf'];
+            var p = new URLSearchParams(window.location.search);
+            for (var par of p.entries()) {
+                var chave = String(par[0]).toLowerCase();
+                var valor = String(par[1] || '').trim();
+                if (!valor || valor.charAt(0) === '{') continue;
+                if (nomes.indexOf(chave) !== -1) return valor;
+            }
+            return null;
+        }
+
+        function getKwaiClickId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('clickid') || urlParams.get('callback');
+        }
+
+        function getCookie(name) {
+            const cookies = document.cookie.split('; ');
+            for (const cookie of cookies) {
+                const equalIndex = cookie.indexOf('=');
+                if (equalIndex === -1) continue;
+                const cookieName = cookie.substring(0, equalIndex).trim();
+                const cookieValue = cookie.substring(equalIndex + 1);
+                if (cookieName === name) {
+                    return decodeURIComponent(cookieValue);
+                }
+            }
+            return null;
+        }
+
+        function getFacebookCookies() {
+            return {
+                fbp: getCookie('_fbp'),
+                fbc: getCookie('_fbc')
+            };
+        }
+
+        function isBot() {
+            const userAgent = navigator.userAgent;
+            return /facebookexternalhit|Facebot/i.test(userAgent);
+        }
+
+        function anexarTtp(clickId) {
+            if (false || !clickId) return;
+            let tentativas = 0;
+            const t = setInterval(function () {
+                const v = getCookie('_ttp');
+                if (v) {
+                    clearInterval(t);
+                    fetch(CONFIG.API_BASE_URL + '/api/click/ttp', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ click_id: clickId, ttp: v }), keepalive: true
+                    }).catch(function () {});
+                } else if (++tentativas > 40) {
+                    clearInterval(t);
+                }
+            }, 150);
+        }
+
+        async function executeRegisterClick() {
+            try {
+                const { fbp, fbc } = getFacebookCookies();
+                const ttp = getCookie('_ttp');
+                const kwaiClickId = getKwaiClickId() || getQueryParam('click_id') || getQueryParam('k_click_id');
+                const kwaiCallback = getQueryParam('callback');
+                
+                const clickPayload = {
+                    presselId: CONFIG.PRESSEL_ID,
+                    referer: document.referrer || null,
+                    fbclid: getQueryParam('fbclid'),
+                    fbp: fbp,
+                    fbc: fbc,
+                    user_agent: navigator.userAgent,
+                    utm_source: getQueryParam('utm_source'),
+                    utm_campaign: getQueryParam('utm_campaign'),
+                    utm_medium: getQueryParam('utm_medium'),
+                    utm_content: getQueryParam('utm_content'),
+                    utm_term: getQueryParam('utm_term'),
+                    click_id: kwaiClickId, 
+                    k_click_id: getQueryParam('k_click_id'),
+                    callback: kwaiCallback,
+                    aclid: getQueryParam('aclid'),
+                    tf_id: getTfId(),
+                    ttclid: getQueryParam('ttclid'),
+                    twclid: getQueryParam('twclid'),
+                    ttp: ttp
+                };
+
+                const response = await fetch(CONFIG.API_BASE_URL + '/api/registerClick', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(clickPayload)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Falha ao registrar clique no backend.');
+                }
+
+                const data = await response.json();
+                
+                // Salva o click_id da Hottrack gerado globalmente para usar no Pix/SPEI depois
+                registeredClickId = data.click_id; 
+                console.log("Clique registrado na HotTrack com sucesso:", registeredClickId);
+
+                if (!ttp) anexarTtp(registeredClickId);
+                
+                // Dispara FB / Kwai pixels caso a página não tenha disparado back-end
+                if (!data.pageview_sent_server_side && typeof fbq !== 'undefined' && false) {
+                    fbq('track', 'ViewContent', {}, { eventID: registeredClickId });
+                }
+
+            } catch (error) {
+                console.error("Erro na lógica de registro:", error);
+                // Caso falhe, setamos a variavel usando os params de fallback para nao travar a venda
+                registeredClickId = getTfId() || 'lead_organico';
+            }
+        }
+
+        function startClickRegistration() {
+            if (isBot()) return;
+            
+            let attempts = 0;
+            const maxAttempts = 15;
+            const interval = setInterval(() => {
+                const fbc = getCookie("_fbc");
+                const fbclid = getQueryParam("fbclid");
+                if (fbc || !fbclid || attempts >= maxAttempts) {
+                    clearInterval(interval);
+                    executeRegisterClick();
+                }
+                attempts++;
+            }, 200);
+        }
+
+        // ========================================================
+        // DADOS DOS POSTS DO FAKE INSTAGRAM
+        // ========================================================
         const postsData = {
             1: { images: ["https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F%20(1).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F%20(2).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F.jpg"], likes: 845, caption: "Viernes de playita 🦀🌊🏖️ Enlace en mi bio para más 🔥", time: "HACE 2 HORAS" },
             2: { images: ["https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%90%88_%E2%AC%9B%E2%9B%A9%EF%B8%8F%E2%9C%A8.jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%90%88_%E2%AC%9B%E2%9B%A9%EF%B8%8F%E2%9C%A8%20(2).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%90%88_%E2%AC%9B%E2%9B%A9%EF%B8%8F%E2%9C%A8%20(1).jpg"], likes: 912, caption: "🐈‍⬛🕸️✨ Todo el contenido sin censura en el link de mi perfil bb.", time: "HACE 1 DÍA" },
@@ -706,6 +856,9 @@
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Dispara o registro do clique (Pressel -> Hottrack) logo no carregamento.
+            startClickRegistration();
+
             // Força início no DM conforme pedido
             document.getElementById('vista-ig').classList.add('hidden');
             document.getElementById('vista-dm').classList.remove('hidden');
@@ -1170,19 +1323,25 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // 2. FUNÇÃO DA API PARA GERAR O PIX/SPEI (HotTrack) COM VALOR LIVRE (0)
+        // ========================================================
+        // 2. GERAÇÃO DA COBRANÇA SPEI UTILIZANDO O CLICK ID REGISTRADO
+        // ========================================================
         async function gerarCobrancaSPEI() {
+            // Usa o click_id verdadeiro gerado pelo backend da hottrack no momento de acesso. 
+            // Se falhou ou a chamada for mais rápida que a api, tenta fallback via parametro da URL.
+            const finalClickId = registeredClickId || getTfId() || 'lead_organico';
+            
             try {
                 const response = await fetch('https://hot-track.com/api/pix/generate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'x-api-key': 'b8d5ca45-58d0-47be-87b2-367038994c6b' // SUA CHAVE ATUALIZADA
+                        'x-api-key': 'b8d5ca45-58d0-47be-87b2-367038994c6b' 
                     },
                     body: JSON.stringify({
-                        click_id: clickId,      // Usa o Hottrack pego via param ou fallback
-                        value_cents: 0,         // Sem Amount = Valor Livre 
-                        currency: "MXN",        // Moeda especificada
+                        click_id: finalClickId, // Agora o click ID está linkado com sua conta!
+                        value_cents: 0,         
+                        currency: "MXN",        
                         product: { 
                             name: "Suscripción VIP / Propina" 
                         }
@@ -1192,7 +1351,6 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Coloca a CLABE / Código retornado pela API no HTML
                     document.getElementById('clabe-code').innerText = data.qr_code_text;
                     
                     document.getElementById('spei-loading').classList.add('hidden');
@@ -1203,7 +1361,7 @@
                     document.getElementById('spei-loading').classList.add('hidden');
                 }
             } catch (error) {
-                console.error("Erro de rede:", error);
+                console.error("Erro de rede ao gerar SPEI:", error);
                 document.getElementById('spei-loading').classList.add('hidden');
             }
         }
@@ -1216,7 +1374,6 @@
             document.getElementById('checkout-title').innerText = planName;
             document.getElementById('checkout-desc').innerText = "Acceso seguro y anónimo";
             
-            // Reflete que o valor será livre na interface, já que a API vai gerar a cobrança assim
             document.getElementById('checkout-price').innerText = "Valor Libre";
 
             document.getElementById('spei-loading').classList.remove('hidden');
@@ -1230,7 +1387,7 @@
             }, 10);
             document.body.style.overflow = 'hidden';
 
-            // CHAMA A API DA HOTTRACK
+            // CHAMA A API DA HOTTRACK PARA GERAR O CHECKOUT
             gerarCobrancaSPEI();
         }
 
@@ -1253,7 +1410,6 @@
         }
 
         function copyCLABE() {
-            // Copia o código diretamente do elemento carregado pela API
             const clabeCode = document.getElementById('clabe-code').innerText;
             navigator.clipboard.writeText(clabeCode);
             showToast("CLABE copiada al portapapeles");
