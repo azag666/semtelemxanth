@@ -228,9 +228,70 @@
     </div>
 
     <!-- ========================================== -->
+    <!-- VISTA 1.5: POST DE INSTAGRAM (CARRUSEL)    -->
+    <!-- ========================================== -->
+    <div id="vista-post" class="hidden flex-col min-h-screen bg-ig-bg w-full fixed inset-0 z-50 overflow-y-auto pb-10">
+        <header class="sticky top-0 bg-ig-bg border-b border-ig-border z-40 px-4 h-12 flex justify-between items-center w-full max-w-md mx-auto">
+            <div class="flex items-center gap-6 cursor-pointer" onclick="closePost()">
+                <i class="fa-solid fa-arrow-left text-2xl text-white hover:text-gray-300 transition-colors"></i>
+                <h1 class="font-bold text-base tracking-tight text-white uppercase">Publicaciones</h1>
+            </div>
+        </header>
+
+        <main class="flex-1 w-full max-w-md mx-auto relative bg-ig-bg pb-10">
+            <div class="flex items-center justify-between p-3">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="closePost()">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-9 h-9 rounded-full border border-ig-border object-cover">
+                    <span class="font-bold text-sm text-white hover:text-gray-300 transition-colors">camila.ofc</span>
+                </div>
+                <i class="fa-solid fa-ellipsis text-white cursor-pointer hover:text-gray-300 transition-colors"></i>
+            </div>
+            
+            <div class="relative w-full aspect-[4/5] bg-ig-border overflow-hidden group">
+                <div id="post-carousel" class="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar relative" style="scroll-behavior: smooth;" onscroll="updateCarouselDots()">
+                    <!-- Images injected here via JS -->
+                </div>
+                
+                <button onclick="moveCarousel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 rounded-full flex items-center justify-center text-white hidden md:group-hover:flex shadow-md z-10 transition-opacity hover:bg-black/60">
+                    <i class="fa-solid fa-chevron-left text-sm -ml-0.5"></i>
+                </button>
+                <button onclick="moveCarousel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 rounded-full flex items-center justify-center text-white hidden md:group-hover:flex shadow-md z-10 transition-opacity hover:bg-black/60">
+                    <i class="fa-solid fa-chevron-right text-sm -mr-0.5"></i>
+                </button>
+
+                <div class="absolute top-3 right-3 bg-black/70 rounded-full px-2.5 py-1 text-[11px] font-medium text-white shadow-sm z-10" id="post-counter">1/3</div>
+                
+                <i id="big-heart" class="fa-solid fa-heart absolute top-1/2 left-1/2 text-white text-7xl drop-shadow-2xl opacity-0 pointer-events-none z-20" style="transform: translate(-50%, -50%) scale(0);"></i>
+            </div>
+
+            <div class="px-3 pt-3 pb-2">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="flex gap-4 text-2xl text-white">
+                        <i id="btn-like" class="fa-regular fa-heart cursor-pointer hover:text-gray-400 transition-colors" onclick="toggleLike()"></i>
+                        <i class="fa-regular fa-comment cursor-pointer hover:text-gray-400 transition-colors" onclick="openModalAnimation('comments-modal', 'comments-content')"></i>
+                        <i class="fa-regular fa-paper-plane cursor-pointer hover:text-gray-400 transition-colors" onclick="openModalAnimation('share-modal', 'share-content')"></i>
+                    </div>
+                    <div class="flex gap-1.5" id="carousel-dots">
+                        <!-- Dots injected here -->
+                    </div>
+                    <i id="btn-save" class="fa-regular fa-bookmark text-2xl text-white cursor-pointer hover:text-gray-400 transition-colors" onclick="toggleSave()"></i>
+                </div>
+                <div class="font-bold text-sm text-white mb-1"><span id="post-likes"></span> Me gusta</div>
+                <div class="text-sm text-white leading-relaxed">
+                    <span class="font-bold cursor-pointer hover:text-gray-300" onclick="closePost()">camila.ofc</span> 
+                    <span id="post-caption"></span>
+                    <br><span class="text-ig-blue cursor-pointer hover:text-blue-400" onclick="abrirLanding()">#onlyfans #linkinbio #modelo #vip</span>
+                </div>
+                <div class="text-gray-400 text-sm mt-1 cursor-pointer hover:text-gray-300" onclick="openModalAnimation('comments-modal', 'comments-content')">Ver los 45 comentarios</div>
+                <div class="text-gray-500 text-[10px] mt-1 uppercase tracking-wide" id="post-time"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========================================== -->
     <!-- VISTA 3: DIRECT MESSAGE (DM) SIMULATION    -->
     <!-- ========================================== -->
-    <div id="vista-dm" class="flex flex-col h-[100dvh] bg-ig-bg w-full fixed inset-0 z-[55] overflow-hidden">
+    <div id="vista-dm" class="hidden flex-col h-[100dvh] bg-ig-bg w-full fixed inset-0 z-[55] overflow-hidden">
         <header class="shrink-0 bg-ig-bg border-b border-ig-border z-40 px-4 h-14 flex justify-between items-center w-full max-w-md mx-auto">
             <div class="flex items-center gap-4 cursor-pointer" onclick="closeDM()">
                 <i class="fa-solid fa-arrow-left text-2xl text-white"></i>
@@ -324,48 +385,270 @@
     </div>
 
     <!-- ========================================== -->
+    <!-- MODAL: COMENTÁRIOS E SHARE                 -->
+    <!-- ========================================== -->
+    <div id="comments-modal" class="fixed inset-0 bg-black/70 z-[60] flex flex-col justify-end hidden opacity-0 transition-opacity duration-300">
+        <div id="comments-content" class="bg-[#262626] w-full max-w-md mx-auto h-[75vh] rounded-t-2xl flex flex-col transform translate-y-full transition-transform duration-300 relative">
+            <div class="flex justify-center pt-3 pb-2"><div class="w-12 h-1 bg-gray-500 rounded-full"></div></div>
+            <div class="text-center font-bold text-white text-sm border-b border-gray-700 pb-3">Comentarios</div>
+            
+            <div class="flex-1 overflow-y-auto p-4 space-y-5 hide-scrollbar" id="comments-list">
+                <div class="flex gap-3">
+                    <img src="https://i.pravatar.cc/150?img=11" class="w-9 h-9 rounded-full object-cover">
+                    <div class="flex-1 text-sm text-white">
+                        <span class="font-bold mr-1">carlos_mty</span>¡Qué hermosa eres! 😍🔥<br>
+                        <span class="text-xs text-gray-400 mt-1 inline-block">2 h &nbsp;&nbsp; Responder</span>
+                    </div>
+                    <i class="fa-regular fa-heart text-gray-500 text-xs mt-1"></i>
+                </div>
+            </div>
+            <div class="p-3 border-t border-gray-700 flex items-center gap-3 bg-[#1a1a1a]">
+                <img src="https://ui-avatars.com/api/?name=Tu+Perfil&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full">
+                <input type="text" id="comment-input" placeholder="Agrega un comentario..." class="flex-1 bg-transparent text-white text-sm outline-none placeholder-gray-400">
+                <button class="text-ig-blue font-bold text-sm px-2">Publicar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="share-modal" class="fixed inset-0 bg-black/70 z-[60] flex flex-col justify-end hidden opacity-0 transition-opacity duration-300">
+        <div id="share-content" class="bg-[#262626] w-full max-w-md mx-auto rounded-t-2xl flex flex-col transform translate-y-full transition-transform duration-300 pb-8">
+            <div class="flex justify-center pt-3 pb-2"><div class="w-12 h-1 bg-gray-500 rounded-full"></div></div>
+            <div class="px-4 py-2 relative border-b border-gray-700 pb-4">
+                <input type="text" placeholder="Buscar" class="w-full bg-[#363636] text-white text-sm rounded-xl py-2 px-10 outline-none">
+                <i class="fa-solid fa-search absolute left-7 top-4 text-gray-400"></i>
+            </div>
+            <div class="flex overflow-x-auto gap-4 p-4 hide-scrollbar border-b border-gray-700">
+                <div class="flex flex-col items-center gap-2 min-w-[65px] cursor-pointer" onclick="showToast('Enlace copiado')">
+                    <div class="w-14 h-14 bg-[#363636] rounded-full flex items-center justify-center text-white hover:bg-gray-600 transition-colors"><i class="fa-regular fa-copy text-xl"></i></div>
+                    <span class="text-xs text-white text-center font-medium">Copiar enlace</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST DE NOTIFICAÇÃO -->
+    <div id="toast-msg" class="fixed bottom-[100px] left-1/2 -translate-x-1/2 bg-[#262626] text-white text-sm px-6 py-3 rounded-lg shadow-xl transition-all duration-300 opacity-0 pointer-events-none z-[70] transform translate-y-4">
+        Mensaje
+    </div>
+
+    <!-- ========================================== -->
     <!-- Video Modal for Stories / Destaques / DM   -->
     <!-- ========================================== -->
     <div id="video-modal" class="fixed inset-0 bg-[#1a1a1a] z-[100] hidden flex-col items-center justify-center">
         <div class="w-full max-w-md h-full relative flex flex-col bg-black md:rounded-lg overflow-hidden shadow-2xl">
-            
             <div class="absolute top-3 left-0 w-full px-2 flex gap-1 z-20">
                 <div class="h-[2px] bg-white/30 flex-1 rounded-full overflow-hidden">
                     <div id="story-progress" class="h-full bg-white w-0 transition-all duration-75"></div>
                 </div>
             </div>
-            
             <div class="absolute top-6 left-0 w-full px-3 flex justify-between items-center z-20">
                 <div class="flex items-center gap-2 cursor-pointer" onclick="closeVideo()">
                     <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-8 h-8 rounded-full object-cover">
                     <span class="text-white text-sm font-semibold drop-shadow-md">camila.ofc</span>
-                    <span class="text-gray-300 text-xs drop-shadow-md ml-1 font-medium">ahora</span>
                 </div>
                 <div class="flex items-center gap-4 text-white drop-shadow-md">
                     <i class="fa-solid fa-xmark text-3xl cursor-pointer drop-shadow-lg font-light" onclick="closeVideo()"></i>
                 </div>
             </div>
+            <!-- Link Sticker Realista -->
+            <div onclick="closeVideo(); abrirLanding();" class="absolute bottom-[22%] left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-md text-black font-bold py-2.5 px-4 rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.3)] flex items-center gap-2 cursor-pointer transition-transform active:scale-95 whitespace-nowrap z-20 text-sm hidden" id="video-link-sticker">
+                <div class="bg-ig-blue text-white rounded-full w-6 h-6 flex items-center justify-center shrink-0"><i class="fa-solid fa-link text-[10px]"></i></div>
+                Ven a ver mi contenido 😈🔞
+            </div>
 
             <video id="story-video" class="w-full h-full object-cover" playsinline preload="auto"></video>
             
             <div class="absolute bottom-0 left-0 w-full p-4 flex items-center gap-4 z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent pb-6">
-                <div class="flex-1 border border-white/40 rounded-full px-4 py-2.5 flex items-center cursor-pointer hover:bg-white/10 transition-colors" onclick="closeVideo();">
-                    <span class="text-white text-sm font-medium">Responder...</span>
+                <div class="flex-1 border border-white/40 rounded-full px-4 py-2.5 flex items-center cursor-pointer hover:bg-white/10 transition-colors" onclick="closeVideo(); openDM();">
+                    <span class="text-white text-sm font-medium">Enviar mensaje...</span>
                 </div>
-                <i class="fa-regular fa-paper-plane text-white text-2xl cursor-pointer hover:scale-110 transition-transform active:scale-95" onclick="closeVideo();"></i>
+                <i class="fa-regular fa-paper-plane text-white text-2xl cursor-pointer hover:scale-110 transition-transform active:scale-95" onclick="closeVideo(); openModalAnimation('share-modal', 'share-content');"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 2: ONLYFANS REPLICA                  -->
+    <!-- ========================================== -->
+    <div id="loader-screen" class="fixed inset-0 bg-white z-[60] flex flex-col items-center justify-center hidden">
+        <div class="loader-of mb-4"></div>
+        <p class="text-of-gray font-semibold text-sm">Cargando perfil seguro...</p>
+    </div>
+
+    <div id="vista-landing" class="hidden bg-white min-h-screen text-of-dark w-full max-w-2xl mx-auto shadow-2xl relative pb-20">
+        <header class="sticky top-0 bg-white/95 backdrop-blur-md z-40 border-b border-of-border px-4 py-2 flex items-center gap-4">
+            <i class="fa-solid fa-arrow-left text-xl text-of-gray cursor-pointer" onclick="voltarIG()"></i>
+            <div>
+                <h1 class="font-bold text-lg flex items-center gap-1 leading-tight">Camila 💋✨ <i class="fa-solid fa-circle-check text-of-blue text-sm"></i></h1>
+                <p class="text-xs text-of-gray font-medium">348 publicaciones • 1.4k Me gusta</p>
+            </div>
+        </header>
+
+        <div class="relative bg-gray-200">
+            <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F%20(2).jpg" class="w-full h-40 md:h-56 object-cover object-center opacity-90">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            
+            <div class="absolute -bottom-10 left-4">
+                <div class="w-24 h-24 rounded-full border-4 border-white bg-white relative">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-full h-full rounded-full object-cover">
+                    <div class="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-14 px-4">
+            <h2 class="font-black text-xl flex items-center gap-1">Camila 💋✨ <i class="fa-solid fa-circle-check text-of-blue text-base"></i></h2>
+            <p class="text-of-gray text-sm mb-3">@camila.ofc • <span class="text-xs text-green-600 font-bold">En línea ahora</span></p>
+            
+            <div class="text-sm leading-relaxed text-of-dark space-y-2 bg-gray-50 p-3.5 rounded-xl border border-of-border">
+                <p>Modelo GFE & Creadora de contenido exclusivo 🔞🔥</p>
+                <p>📍 En <span class="dynamic-city font-bold">tu ciudad</span> para citas privadas.</p>
+                <p class="font-semibold text-of-blue">👇 Selecciona tu paquete abajo para desbloquear todo:</p>
+            </div>
+        </div>
+
+        <!-- SEÇÃO DE PACOTES EXCLUSIVOS -->
+        <div class="mt-5 px-4 space-y-3" id="pacotes-section">
+            <div class="text-xs font-black uppercase tracking-wider text-gray-400 text-center mb-1">✨ ELIGE TU PACK ✨</div>
+            
+            <button onclick="openModal('checkoutModal', 'Pack Básico', 5000)" class="w-full bg-white hover:bg-gray-50 border border-of-border p-3.5 rounded-xl text-left flex justify-between items-center shadow-sm transition-all active:scale-[0.99]">
+                <div>
+                    <div class="font-black text-sm text-of-dark">🔸 BÁSICO</div>
+                    <div class="text-xs text-of-gray">7 Archivos (Fotos y vídeos suaves)</div>
+                </div>
+                <div class="text-of-blue font-black text-base">$50 <span class="text-xs font-normal">MXN</span></div>
+            </button>
+
+            <button onclick="openModal('checkoutModal', 'Pack Full', 11000)" class="w-full bg-of-blue hover:bg-of-blue-hover text-white p-3.5 rounded-xl text-left flex justify-between items-center shadow-md transition-all active:scale-[0.99] relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-extrabold px-2 py-0.5 rounded-bl uppercase">Más vendido</div>
+                <div>
+                    <div class="font-black text-sm">🔥 PACK FULL</div>
+                    <div class="text-xs text-blue-100">+105 Archivos: Sexo Rudo, Anal y Orgías</div>
+                </div>
+                <div class="font-black text-base">$110 <span class="text-xs font-normal opacity-80">MXN</span></div>
+            </button>
+
+            <button onclick="openModal('checkoutModal', 'VIP Total', 23000)" class="w-full bg-white hover:bg-gray-50 border border-of-border p-3.5 rounded-xl text-left flex justify-between items-center shadow-sm transition-all active:scale-[0.99]">
+                <div>
+                    <div class="font-black text-sm text-of-dark">👑 VIP TOTAL</div>
+                    <div class="text-xs text-of-gray">Pack Full + WhatsApp + Videollamada (15 min) + Fetichismos</div>
+                </div>
+                <div class="text-of-blue font-black text-base">$230 <span class="text-xs font-normal">MXN</span></div>
+            </button>
+
+            <button onclick="openModal('checkoutModal', 'Elite Encuentros', 45000)" class="w-full bg-gray-900 hover:bg-black text-white p-3.5 rounded-xl text-left flex justify-between items-center shadow-md transition-all active:scale-[0.99]">
+                <div>
+                    <div class="font-black text-sm text-yellow-400">💎 ELITE ENCUENTROS</div>
+                    <div class="text-xs text-gray-300">WhatsApp directo cita presencial + Acervo 3 años</div>
+                </div>
+                <div class="font-black text-base text-yellow-400">$450 <span class="text-xs font-normal text-white">MXN</span></div>
+            </button>
+        </div>
+
+        <div class="p-4 space-y-6 bg-gray-50/50 mt-6" id="of-feed-posts">
+            <div class="text-center text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-200 pb-2">Acervo de Previas (Visualización Única 5s)</div>
+
+            <!-- POST 1 -->
+            <div class="bg-white border border-of-border rounded-xl p-4 shadow-sm" id="of-post-1">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-10 h-10 rounded-full object-cover">
+                        <div>
+                            <div class="font-bold text-sm flex items-center gap-1">Camila 💋✨ <i class="fa-solid fa-circle-check text-of-blue text-xs"></i></div>
+                            <div class="text-xs text-of-gray">Hace 15 min • Vista previa 5s</div>
+                        </div>
+                    </div>
+                    <span class="bg-blue-50 text-of-blue text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-200">1 sola vez</span>
+                </div>
+                <p class="text-sm mb-3">¿Quieres ver cómo me pongo cuando nadie me ve? 😈🔥 Toca para ver la previa de 5 segundos.</p>
+                <div class="media-container relative bg-black rounded-lg aspect-[3/4] overflow-hidden cursor-pointer" onclick="playInlinePreview('of-post-1', 'https://pub-c737fc13f75b440d8a7a6655e86b4ead.r2.dev/1_5042113862577423790.mp4')">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F.jpg" class="w-full h-full object-cover opacity-60 blur-md scale-105">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/20 overlay-prompt">
+                        <div class="w-12 h-12 bg-of-blue rounded-full flex items-center justify-center mb-2 animate-pulse shadow-lg">
+                            <i class="fa-solid fa-play text-white text-lg ml-1"></i>
+                        </div>
+                        <span class="font-bold text-white bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-full text-xs uppercase tracking-wider border border-white/20">Tocar para ver previa (5s)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center py-4">
+                <button onclick="document.getElementById('pacotes-section').scrollIntoView({behavior: 'smooth'})" class="bg-of-blue hover:bg-of-blue-hover text-white font-black px-6 py-3 rounded-full text-xs uppercase tracking-widest shadow-md">
+                    🔒 Desbloquear +105 Archivos Completos
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CHECKOUT SPEI -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-2xl h-[85vh] sm:h-auto max-h-[800px] shadow-2xl flex flex-col transform translate-y-full sm:translate-y-0 transition-transform duration-300" id="checkoutModalContent">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white rounded-t-3xl z-10">
+                <h3 class="font-bold text-of-dark flex items-center gap-2"><i class="fa-solid fa-shield-halved text-green-500"></i> Pago Seguro</h3>
+                <button onclick="closeModal('checkoutModal')" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center hover:bg-gray-200"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="overflow-y-auto flex-1 p-5 hide-scrollbar">
+                <div class="bg-of-bg border border-of-border rounded-xl p-4 mb-5 shadow-sm">
+                    <div class="flex items-center gap-3 border-b border-of-border pb-3 mb-3">
+                        <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-12 h-12 rounded-full">
+                        <div>
+                            <h4 class="font-bold text-sm text-of-dark" id="checkout-title">Suscripción VIP</h4>
+                            <p class="text-xs text-of-gray" id="checkout-desc">Acceso total + WhatsApp</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <span class="text-sm font-medium text-of-gray">Total a pagar:</span>
+                        <span class="text-3xl font-black text-of-blue" id="checkout-price">$120.00 MXN</span>
+                    </div>
+                </div>
+                <div id="checkout-instructions-container" class="mb-4">
+                    <div id="spei-loading" class="bg-gray-50 rounded-xl p-8 border border-gray-200 text-center flex flex-col items-center justify-center">
+                        <div class="loader-of mb-3"></div>
+                        <p class="text-sm font-semibold text-of-dark">Generando CLABE interbancaria...</p>
+                    </div>
+                    <div id="spei-data" class="bg-white rounded-xl p-0 text-center hidden">
+                        <p class="text-xs font-bold text-of-gray uppercase tracking-widest mb-2">Tu CLABE (SPEI) para depositar:</p>
+                        <div class="bg-gray-50 border-2 border-of-blue/30 rounded-xl p-4 mb-4 relative overflow-hidden text-left">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-of-blue"></div>
+                            <p class="text-[13px] text-gray-700 mb-2 leading-relaxed">
+                                Banco: STP (Sistema de Transferencia y Pagos)<br>
+                                Nombre: Camila Fagundes<br>
+                                CLABE:
+                            </p>
+                            <p id="clabe-code" class="text-xl sm:text-2xl font-mono text-of-dark tracking-widest break-all font-black text-center mt-2">123456789012345678</p>
+                        </div>
+                        <button onclick="copyCLABE()" class="w-full py-4 bg-of-blue hover:bg-of-blue-hover text-white rounded-xl text-base font-black flex items-center justify-center gap-2 mb-4 shadow-[0_4px_15px_rgba(0,175,240,0.3)]">
+                            <i class="fa-regular fa-copy text-lg"></i> COPIAR CLABE EXACTA
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- SCRIPTS -->
     <script>
+        const postsData = {
+            1: { images: ["https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F%20(1).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F%20(2).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F.jpg"], likes: 845, caption: "Viernes de playita 🦀🌊🏖️ Enlace en mi bio para más 🔥", time: "HACE 2 HORAS" },
+            2: { images: ["https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%90%88_%E2%AC%9B%E2%9B%A9%EF%B8%8F%E2%9C%A8.jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%90%88_%E2%AC%9B%E2%9B%A9%EF%B8%8F%E2%9C%A8%20(2).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%90%88_%E2%AC%9B%E2%9B%A9%EF%B8%8F%E2%9C%A8%20(1).jpg"], likes: 912, caption: "🐈‍⬛🕸️✨ Todo el contenido sin censura en el link de mi perfil bb.", time: "HACE 1 DÍA" },
+            3: { images: ["https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/N%CC%83ejejeje%2C%20amo%20mis%20un%CC%83as%20azules%3B)%20(1).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/N%CC%83ejejeje%2C%20amo%20mis%20un%CC%83as%20azules%3B)%20(2).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/N%CC%83ejejeje%2C%20amo%20mis%20un%CC%83as%20azules%3B)%20(3).jpg"], likes: 643, caption: "Ñejejeje, amo mis uñas azules 😉💧", time: "HACE 3 DÍAS" },
+            4: { images: ["https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Kuchauu%2C%20dias%20lindos-))%20(1).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Kuchauu%2C%20dias%20lindos-))%20(2).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Kuchauu%2C%20dias%20lindos-)).jpg"], likes: 801, caption: "Kuchauu, dias lindos :)) ✨ Suscríbete para hablar conmigo por WhatsApp.", time: "HACE 4 DÍAS" },
+            5: { images: ["https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/La%20u%CC%81ltima%20foto%F0%9F%91%8D%F0%9F%8F%BB%20(1).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/La%20u%CC%81ltima%20foto%F0%9F%91%8D%F0%9F%8F%BB%20(2).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/La%20u%CC%81ltima%20foto%F0%9F%91%8D%F0%9F%8F%BB.jpg"], likes: 956, caption: "La última foto 👍🏻🤭🔥", time: "HACE 5 DÍAS" },
+            6: { images: ["https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(1).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte).jpg"], likes: 988, caption: "🌴🌺🌊 (Mi hombrote en la ultima foto, muy mamada de mi parte) 💪🏻", time: "HACE 1 SEMANA" }
+        };
+
         let currentView = 'dm'; 
         let isModalOpen = false;
         let isBotTyping = false;
-        
         let currentBotStep = 0; 
         let fallbackTimeout = null;
-        let chatStep = 0; // Tracks overall sequence
+        let chatStep = 0;
+        let currentPostId = null;
+        let postStates = {};
+        let landingDownsellTimer = null;
+        let downsellTriggered = false;
+        
+        Object.keys(postsData).forEach(id => { postStates[id] = { liked: false, saved: false }; });
 
         // ========================================================
         // ESTRUTURA DO FUNIL HUMANIZADO (MÉXICO)
@@ -376,7 +659,6 @@
         const botMessagesStep1_1_Fallback = [
             { type: 'text', content: "¿Qué pasó chiquito? ¿Te mando un videíto de prueba para que te animes? 👀" }
         ];
-
         const botMessagesStep2 = [
             { type: 'text', content: "Me llamo Camila, tengo 21 añitos y vivo aquí en tu ciudad 📍" },
             { type: 'text', content: "Fíjate que apenas ando empezando a vender mis fotos y videos, y también hago encuentros presenciales 😈" },
@@ -385,7 +667,6 @@
         const botMessagesStep2_2_Fallback = [
             { type: 'text', content: "Ay, ¿no quieres ver mi panochita bien mojadita entonces? 🥺" }
         ];
-
         const botMessagesStep3 = [
             { type: 'text', content: "Va amor, te mando una pruebita nada más, ojalá te guste mucho." },
             { type: 'text', content: "Si quieres tengo cosas mucho más ricas..." },
@@ -395,7 +676,6 @@
         const botMessagesStep3_3_Fallback = [
             { type: 'text', content: "¿Te mando uno más pasadito de tono para que veas lo que te pierdes? 🔥" }
         ];
-
         const botMessagesStep4 = [
             { type: 'text', content: "Ay ya te lo voy a mandar, la neta ando bien caliente ahorita... 🤤" },
             { type: 'video', content: "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/1_5042113862577423768.mp4", caption: null },
@@ -404,7 +684,6 @@
             { type: 'text', content: "✨ MI MENÚ PRIVADO ✨<br><br>🔥 <b>PACK CALENTAMIENTO — $150 MXN</b><br>• 15 Archivos (Fotos y vídeos míos tocándome)<br><br>📱 <b>NOVIO VIRTUAL — $350 MXN</b><br>• +100 Archivos (Anal, squirting)<br>• Mi WhatsApp personal para sextear 24/7.<br><br>👑 <b>CITA PRESENCIAL — $2,500 MXN</b><br>• Trato de novios (2 horas).<br>• Incluye mi WhatsApp para agendar tu cita." },
             { type: 'text', content: "Acepto transferencia <b>CLABE</b> o depósito en <b>OXXO</b>. ¿Cuál te late más, guapo? Dime para pasarte la cuenta 💳" }
         ];
-
         const botMessagesStep5 = [
             { type: 'text', content: "Claro amor, aquí tienes mi CLABE interbancaria:" },
             { type: 'text', content: "🏦 <b>Banco:</b> STP (o el que uses)<br>🔢 <b>CLABE:</b> <span class='font-mono font-bold text-ig-blue text-lg tracking-widest'>123456789012345678</span><br>👤 <b>A nombre de:</b> Camila<br><button onclick=\"navigator.clipboard.writeText('123456789012345678'); this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> ¡COPIADO!'; this.classList.replace('bg-ig-blue', 'bg-green-600'); setTimeout(() => { this.innerHTML='<i class=\\'fa-regular fa-copy\\'></i> COPIAR CLABE'; this.classList.replace('bg-green-600', 'bg-ig-blue'); }, 2000);\" class=\"mt-3 bg-ig-blue hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-[14px] w-full transition-colors flex items-center justify-center gap-2 active:scale-95\"><i class=\"fa-regular fa-copy\"></i> COPIAR CLABE</button>" },
@@ -414,7 +693,11 @@
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Initiate funnel automatically on direct DM entry
+            // Força início no DM conforme pedido
+            document.getElementById('vista-ig').classList.add('hidden');
+            document.getElementById('vista-dm').classList.remove('hidden');
+            document.getElementById('vista-dm').classList.add('flex');
+            
             setTimeout(() => {
                 const input = document.getElementById('dm-input');
                 input.value = "Hola, vine a ver tu contenido 😈";
@@ -424,6 +707,55 @@
             const chatMain = document.getElementById('chat-main-container');
             if(chatMain) chatMain.addEventListener('click', hideCustomKeyboard);
         });
+
+        // ========================================================
+        // ONLYFANS: PREVIAS INLINE (5 SEGUNDOS)
+        // ========================================================
+        function playInlinePreview(postId, videoUrl) {
+            const postDiv = document.getElementById(postId);
+            if(!postDiv) return;
+            
+            const mediaContainer = postDiv.querySelector('.media-container');
+            if(!mediaContainer || mediaContainer.classList.contains('locked')) return;
+
+            mediaContainer.innerHTML = `
+                <video src="${videoUrl}" class="w-full h-full object-cover" autoplay playsinline muted></video>
+                <div class="absolute top-3 right-3 bg-black/70 text-white text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider backdrop-blur-md">
+                    ⏱️ <span id="timer-${postId}">5</span>s
+                </div>
+            `;
+
+            let timeLeft = 5;
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                const timerSpan = document.getElementById(`timer-${postId}`);
+                if(timerSpan) timerSpan.innerText = timeLeft;
+                
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    lockOFPostInline(postId);
+                }
+            }, 1000);
+        }
+
+        function lockOFPostInline(postId) {
+            const postDiv = document.getElementById(postId);
+            if(!postDiv) return;
+            
+            const mediaContainer = postDiv.querySelector('.media-container');
+            if(mediaContainer) {
+                mediaContainer.classList.add('locked');
+                mediaContainer.onclick = () => document.getElementById('pacotes-section').scrollIntoView({behavior: 'smooth'});
+                mediaContainer.innerHTML = `
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F.jpg" class="w-full h-full object-cover opacity-20 blur-2xl scale-110 grayscale">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/70">
+                        <i class="fa-solid fa-lock text-3xl text-gray-300 mb-2"></i>
+                        <span class="font-bold text-white bg-of-blue px-4 py-2 rounded-full text-[11px] uppercase tracking-wider shadow-lg">Elige tu pack para ver completo</span>
+                        <span class="text-[10px] text-gray-300 mt-1.5 font-medium">Visualización única (5s) agotada</span>
+                    </div>
+                `;
+            }
+        }
 
         // ========================================================
         // TECLADO CUSTOMIZADO DM
@@ -547,7 +879,6 @@
                 const vistoEl = document.getElementById(`${userBubbleId}-visto`);
                 if(vistoEl) vistoEl.classList.remove('hidden');
                 
-                // Triggers funnel state machine
                 handleUserReply();
             }, 1800);
         }
@@ -583,7 +914,7 @@
                 if (step === 1) processBotQueue(botMessagesStep1_1_Fallback, null);
                 if (step === 2) processBotQueue(botMessagesStep2_2_Fallback, null);
                 if (step === 3) processBotQueue(botMessagesStep3_3_Fallback, null);
-            }, 20000); // Wait 20s for inactivity fallback
+            }, 20000); // 20s inatividade
         }
 
         async function processBotQueue(messages, callback) {
@@ -592,11 +923,11 @@
                 const msgObj = messages[i];
                 
                 if (msgObj.type === 'text') {
-                    // Calculo de digitação: mais demorado para ficar realista
+                    // Calculo de digitação: mais demorado para ficar realista (85ms/char)
                     const charCount = msgObj.content.length;
-                    let totalTypingTime = charCount * 85; // Aumentado para 85ms por char
-                    if (totalTypingTime < 4000) totalTypingTime = 4000; // Mínimo de 4 segundos
-                    if (totalTypingTime > 12000) totalTypingTime = 12000; // Máximo de 12 segundos
+                    let totalTypingTime = charCount * 85; 
+                    if (totalTypingTime < 4000) totalTypingTime = 4000; 
+                    if (totalTypingTime > 12000) totalTypingTime = 12000; 
                     
                     const pausePoint = Math.floor(totalTypingTime * 0.4);
                     const resumePoint = Math.floor(totalTypingTime * 0.6);
@@ -614,12 +945,12 @@
                     appendBotMessage(msgObj.content);
                 } else if (msgObj.type === 'video') {
                     showTypingIndicator();
-                    await new Promise(r => setTimeout(r, 5000)); // Tempo elevado antes do envio da mídia
+                    await new Promise(r => setTimeout(r, 5000)); 
                     removeTypingIndicator();
                     appendBotVideoViewOnce(msgObj.content, msgObj.caption);
                 }
                 
-                await new Promise(r => setTimeout(r, 1200)); // Pausa entre mensagens concluídas
+                await new Promise(r => setTimeout(r, 1200)); 
             }
             isBotTyping = false;
             if(callback) callback();
@@ -693,7 +1024,6 @@
             const el = document.getElementById(msgId);
             if (el.classList.contains('opened')) return;
             
-            // Mark as viewed
             el.classList.add('opened', 'opacity-60');
             el.innerHTML = `
                 <div class="w-9 h-9 bg-transparent border border-gray-500 rounded-full flex items-center justify-center shrink-0">
@@ -710,16 +1040,190 @@
             if (mainChat) mainChat.scrollTop = mainChat.scrollHeight;
         }
 
+        // ==========================================
+        // UI & NAVIGATION FUNCTIONS (IG, POST, STORY)
+        // ==========================================
+        
+        function openDM() {
+            currentView = 'dm';
+            hideIGNotification();
+            closeAllModals();
+            document.getElementById('vista-ig').classList.add('hidden');
+            document.getElementById('vista-post').classList.add('hidden');
+            document.getElementById('vista-landing').classList.add('hidden');
+            document.getElementById('vista-dm').classList.remove('hidden');
+            document.getElementById('vista-dm').classList.add('flex');
+            window.scrollTo(0, 0);
+        }
+        
+        function closeDM() {
+            currentView = 'ig';
+            hideCustomKeyboard();
+            document.getElementById('vista-dm').classList.add('hidden');
+            document.getElementById('vista-dm').classList.remove('flex');
+            document.getElementById('vista-ig').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function abrirLanding() {
+            currentView = 'landing';
+            closeAllModals(); 
+            
+            document.getElementById('vista-ig').classList.add('hidden');
+            document.getElementById('vista-post').classList.add('hidden');
+            document.getElementById('vista-post').classList.remove('flex');
+            document.getElementById('vista-dm').classList.add('hidden');
+            document.getElementById('vista-dm').classList.remove('flex');
+            
+            document.getElementById('loader-screen').classList.remove('hidden');
+            document.body.style.backgroundColor = '#ffffff';
+
+            setTimeout(() => {
+                document.getElementById('loader-screen').classList.add('hidden');
+                document.getElementById('vista-landing').classList.remove('hidden');
+                document.getElementById('vista-landing').classList.add('fade-in');
+                window.scrollTo(0, 0);
+                
+                clearTimeout(landingDownsellTimer);
+                landingDownsellTimer = setTimeout(() => {
+                    triggerDownsell();
+                }, 25000);
+            }, 800);
+        }
+
+        function voltarIG() {
+            currentView = 'ig';
+            document.getElementById('vista-landing').classList.add('hidden');
+            document.getElementById('vista-ig').classList.remove('hidden');
+            document.body.style.backgroundColor = '#000000';
+            window.scrollTo(0, 0);
+            clearTimeout(landingDownsellTimer);
+        }
+
+        function triggerDownsell() {
+            if (downsellTriggered) return;
+            downsellTriggered = true;
+            // Aqui entraria lógica de downsell se necessário
+        }
+
+        function toggleFollowState(btn) {
+            if (btn.innerText === "Seguir") {
+                btn.innerText = "Pendiente";
+                btn.className = "flex-1 bg-[#363636] text-white font-semibold py-1.5 rounded-lg text-sm";
+                showToast("Solicitud enviada");
+            } else {
+                btn.innerText = "Seguir";
+                btn.className = "flex-1 bg-ig-blue text-white font-semibold py-1.5 rounded-lg text-sm";
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-msg');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            setTimeout(() => { toast.classList.add('opacity-0', 'translate-y-4'); }, 2500);
+        }
+
+        function closeAllModals() {
+            isModalOpen = false;
+            closeVideoSilent();
+            closeModalAnimationSilent('comments-modal', 'comments-content');
+            closeModalAnimationSilent('share-modal', 'share-content');
+            closeCheckoutSilent();
+        }
+
+        function closeModalAnimationSilent(modalId, contentId) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(contentId);
+            if(modal && content) {
+                modal.classList.add('opacity-0');
+                content.classList.add('translate-y-full');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        }
+
+        function openModalAnimation(modalId, contentId) {
+            isModalOpen = true;
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(contentId);
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('translate-y-full');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openModal(modalId, planName, price) {
+            isModalOpen = true;
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(modalId + 'Content');
+            
+            document.getElementById('checkout-title').innerText = planName;
+            document.getElementById('checkout-desc').innerText = "Acceso seguro y anónimo";
+            document.getElementById('checkout-price').innerText = "$" + (price/100) + " MXN";
+
+            document.getElementById('spei-loading').classList.remove('hidden');
+            document.getElementById('spei-data').classList.add('hidden');
+            document.getElementById('checkout-instructions-container').classList.remove('hidden');
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('translate-y-full');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+
+            // Simula delay de geração
+            setTimeout(() => {
+                document.getElementById('spei-loading').classList.add('hidden');
+                document.getElementById('spei-data').classList.remove('hidden');
+            }, 1500);
+        }
+
+        function closeModal(modalId) {
+            isModalOpen = false;
+            closeCheckoutSilent();
+        }
+
+        function closeCheckoutSilent() {
+            const modal = document.getElementById('checkoutModal');
+            const content = document.getElementById('checkoutModalContent');
+            if(modal && content) {
+                modal.classList.add('opacity-0');
+                content.classList.add('translate-y-full');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        }
+
+        function copyCLABE() {
+            navigator.clipboard.writeText('123456789012345678');
+            showToast("CLABE copiada al portapapeles");
+        }
+
         function playVideo(url) {
             isModalOpen = true;
             const modal = document.getElementById('video-modal');
             const vid = document.getElementById('story-video');
             const progress = document.getElementById('story-progress');
+            const sticker = document.getElementById('video-link-sticker');
             
             progress.style.width = '0%';
             vid.src = url;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            
+            if(currentView === 'ig') {
+                sticker.classList.remove('hidden');
+            } else {
+                sticker.classList.add('hidden');
+            }
             
             const playPromise = vid.play();
             if (playPromise !== undefined) {
@@ -737,37 +1241,98 @@
 
         function closeVideo() {
             isModalOpen = false;
-            const modal = document.getElementById('video-modal');
-            const vid = document.getElementById('story-video');
-            vid.pause();
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            closeVideoSilent();
         }
 
-        // Navigation
-        function openDM() {
-            currentView = 'dm';
-            hideIGNotification();
-            document.getElementById('vista-ig').classList.add('hidden');
-            document.getElementById('vista-dm').classList.remove('hidden');
-            document.getElementById('vista-dm').classList.add('flex');
-            window.scrollTo(0, 0);
+        function closeVideoSilent() {
+            const modal = document.getElementById('video-modal');
+            const vid = document.getElementById('story-video');
+            if(vid) vid.pause();
+            if(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
         }
-        
-        function closeDM() {
+
+        function openPost(postId) {
+            currentView = 'post';
+            currentPostId = postId;
+            const post = postsData[postId];
+            const carousel = document.getElementById('post-carousel');
+            const dotsContainer = document.getElementById('carousel-dots');
+            
+            carousel.innerHTML = ''; dotsContainer.innerHTML = '';
+            
+            post.images.forEach((imgSrc, index) => {
+                const img = document.createElement('img');
+                img.src = imgSrc;
+                img.className = "snap-center w-full h-full flex-shrink-0 object-cover select-none cursor-pointer";
+                carousel.appendChild(img);
+                
+                const dot = document.createElement('div');
+                dot.className = `w-1.5 h-1.5 rounded-full transition-colors ${index === 0 ? 'bg-ig-blue' : 'bg-gray-600'}`;
+                dotsContainer.appendChild(dot);
+            });
+            
+            updatePostUI();
+            document.getElementById('vista-ig').classList.add('hidden');
+            document.getElementById('vista-post').classList.remove('hidden');
+            document.getElementById('vista-post').classList.add('flex');
+            carousel.scrollLeft = 0; window.scrollTo(0, 0);
+        }
+
+        function closePost() {
             currentView = 'ig';
-            hideCustomKeyboard();
-            document.getElementById('vista-dm').classList.add('hidden');
-            document.getElementById('vista-dm').classList.remove('flex');
+            document.getElementById('vista-post').classList.add('hidden');
+            document.getElementById('vista-post').classList.remove('flex');
             document.getElementById('vista-ig').classList.remove('hidden');
             window.scrollTo(0, 0);
         }
-        
-        function abrirLanding() {
-            currentView = 'landing';
-            document.getElementById('vista-ig').classList.add('hidden');
-            document.getElementById('vista-dm').classList.add('hidden');
-            document.body.style.backgroundColor = '#ffffff';
+
+        function moveCarousel(direction) {
+            const carousel = document.getElementById('post-carousel');
+            const width = carousel.offsetWidth;
+            carousel.scrollBy({ left: direction * width, behavior: 'smooth' });
+        }
+
+        function updateCarouselDots() {
+            const carousel = document.getElementById('post-carousel');
+            const index = Math.round(carousel.scrollLeft / carousel.offsetWidth);
+            const dots = document.getElementById('carousel-dots').children;
+            for (let i = 0; i < dots.length; i++) {
+                dots[i].className = `w-1.5 h-1.5 rounded-full transition-colors ${i === index ? 'bg-ig-blue' : 'bg-gray-600'}`;
+            }
+            document.getElementById('post-counter').innerText = `${index + 1}/${dots.length}`;
+        }
+
+        function toggleLike() {
+            if (!currentPostId) return;
+            postStates[currentPostId].liked = !postStates[currentPostId].liked;
+            updatePostUI();
+        }
+
+        function toggleSave() {
+            if (!currentPostId) return;
+            postStates[currentPostId].saved = !postStates[currentPostId].saved;
+            updatePostUI();
+        }
+
+        function updatePostUI() {
+            if (!currentPostId) return;
+            const state = postStates[currentPostId];
+            const btnLike = document.getElementById('btn-like');
+            const btnSave = document.getElementById('btn-save');
+            
+            if (state.liked) {
+                btnLike.className = "fa-solid fa-heart cursor-pointer text-red-500 transition-colors";
+            } else {
+                btnLike.className = "fa-regular fa-heart cursor-pointer hover:text-gray-400 text-white transition-colors";
+            }
+            if (state.saved) { 
+                btnSave.className = "fa-solid fa-bookmark cursor-pointer text-white transition-colors"; 
+            } else { 
+                btnSave.className = "fa-regular fa-bookmark cursor-pointer hover:text-gray-400 text-white transition-colors"; 
+            }
         }
 
         async function fetchUserCity() {
