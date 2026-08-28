@@ -99,6 +99,15 @@
             -webkit-tap-highlight-color: transparent;
         }
     </style>
+
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "y6nmo03ta2");
+    </script>
 </head>
 <body class="antialiased selection:bg-ig-blue selection:text-white">
 
@@ -593,12 +602,12 @@
                         <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-12 h-12 rounded-full">
                         <div>
                             <h4 class="font-bold text-sm text-of-dark" id="checkout-title">Suscripción VIP</h4>
-                            <p class="text-xs text-of-gray" id="checkout-desc">Acceso total + WhatsApp</p>
+                            <p class="text-xs text-of-gray" id="checkout-desc">Acceso seguro y anónimo</p>
                         </div>
                     </div>
                     <div class="flex justify-between items-end">
                         <span class="text-sm font-medium text-of-gray">Total a pagar:</span>
-                        <span class="text-3xl font-black text-of-blue" id="checkout-price">$120.00 MXN</span>
+                        <span class="text-3xl font-black text-of-blue" id="checkout-price">Valor Libre</span>
                     </div>
                 </div>
                 <div id="checkout-instructions-container" class="mb-4">
@@ -615,7 +624,7 @@
                                 Nombre: Camila Fagundes<br>
                                 CLABE:
                             </p>
-                            <p id="clabe-code" class="text-xl sm:text-2xl font-mono text-of-dark tracking-widest break-all font-black text-center mt-2">123456789012345678</p>
+                            <p id="clabe-code" class="text-xl sm:text-2xl font-mono text-of-dark tracking-widest break-all font-black text-center mt-2">...</p>
                         </div>
                         <button onclick="copyCLABE()" class="w-full py-4 bg-of-blue hover:bg-of-blue-hover text-white rounded-xl text-base font-black flex items-center justify-center gap-2 mb-4 shadow-[0_4px_15px_rgba(0,175,240,0.3)]">
                             <i class="fa-regular fa-copy text-lg"></i> COPIAR CLABE EXACTA
@@ -628,6 +637,10 @@
 
     <!-- SCRIPTS -->
     <script>
+        // 1. CAPTURA PARÂMETRO DA TRAFFIC FACTORY (?Hottrack=)
+        const urlParams = new URLSearchParams(window.location.search);
+        const clickId = urlParams.get('Hottrack') || 'lead_organico';
+
         const postsData = {
             1: { images: ["https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F%20(1).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F%20(2).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F.jpg"], likes: 845, caption: "Viernes de playita 🦀🌊🏖️ Enlace en mi bio para más 🔥", time: "HACE 2 HORAS" },
             2: { images: ["https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%90%88_%E2%AC%9B%E2%9B%A9%EF%B8%8F%E2%9C%A8.jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%90%88_%E2%AC%9B%E2%9B%A9%EF%B8%8F%E2%9C%A8%20(2).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%90%88_%E2%AC%9B%E2%9B%A9%EF%B8%8F%E2%9C%A8%20(1).jpg"], likes: 912, caption: "🐈‍⬛🕸️✨ Todo el contenido sin censura en el link de mi perfil bb.", time: "HACE 1 DÍA" },
@@ -1157,6 +1170,44 @@
             document.body.style.overflow = 'hidden';
         }
 
+        // 2. FUNÇÃO DA API PARA GERAR O PIX/SPEI (HotTrack) COM VALOR LIVRE (0)
+        async function gerarCobrancaSPEI() {
+            try {
+                const response = await fetch('https://hot-track.com/api/pix/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': 'b8d5ca45-58d0-47be-87b2-367038994c6b' // SUA CHAVE ATUALIZADA
+                    },
+                    body: JSON.stringify({
+                        click_id: clickId,      // Usa o Hottrack pego via param ou fallback
+                        value_cents: 0,         // Sem Amount = Valor Livre 
+                        currency: "MXN",        // Moeda especificada
+                        product: { 
+                            name: "Suscripción VIP / Propina" 
+                        }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Coloca a CLABE / Código retornado pela API no HTML
+                    document.getElementById('clabe-code').innerText = data.qr_code_text;
+                    
+                    document.getElementById('spei-loading').classList.add('hidden');
+                    document.getElementById('spei-data').classList.remove('hidden');
+                } else {
+                    console.error("Erro na HotTrack:", data.message);
+                    alert("Erro ao generar pago: " + data.message);
+                    document.getElementById('spei-loading').classList.add('hidden');
+                }
+            } catch (error) {
+                console.error("Erro de rede:", error);
+                document.getElementById('spei-loading').classList.add('hidden');
+            }
+        }
+
         function openModal(modalId, planName, price) {
             isModalOpen = true;
             const modal = document.getElementById(modalId);
@@ -1164,7 +1215,9 @@
             
             document.getElementById('checkout-title').innerText = planName;
             document.getElementById('checkout-desc').innerText = "Acceso seguro y anónimo";
-            document.getElementById('checkout-price').innerText = "$" + (price/100) + " MXN";
+            
+            // Reflete que o valor será livre na interface, já que a API vai gerar a cobrança assim
+            document.getElementById('checkout-price').innerText = "Valor Libre";
 
             document.getElementById('spei-loading').classList.remove('hidden');
             document.getElementById('spei-data').classList.add('hidden');
@@ -1177,11 +1230,8 @@
             }, 10);
             document.body.style.overflow = 'hidden';
 
-            // Simula delay de geração
-            setTimeout(() => {
-                document.getElementById('spei-loading').classList.add('hidden');
-                document.getElementById('spei-data').classList.remove('hidden');
-            }, 1500);
+            // CHAMA A API DA HOTTRACK
+            gerarCobrancaSPEI();
         }
 
         function closeModal(modalId) {
@@ -1203,7 +1253,9 @@
         }
 
         function copyCLABE() {
-            navigator.clipboard.writeText('123456789012345678');
+            // Copia o código diretamente do elemento carregado pela API
+            const clabeCode = document.getElementById('clabe-code').innerText;
+            navigator.clipboard.writeText(clabeCode);
             showToast("CLABE copiada al portapapeles");
         }
 
