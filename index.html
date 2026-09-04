@@ -99,15 +99,6 @@
             -webkit-tap-highlight-color: transparent;
         }
     </style>
-
-    <!-- Microsoft Clarity -->
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "y6nmo03ta2");
-    </script>
 </head>
 <body class="antialiased selection:bg-ig-blue selection:text-white">
 
@@ -134,7 +125,7 @@
     <!-- ========================================== -->
     <!-- VISTA 1: INSTAGRAM PERFIL PUBLICO          -->
     <!-- ========================================== -->
-    <div id="vista-ig" class="hidden flex-col min-h-screen bg-ig-bg w-full relative">
+    <div id="vista-ig" class="flex flex-col min-h-screen bg-ig-bg w-full relative">
         <header class="sticky top-0 bg-ig-bg border-b border-ig-border z-40 px-4 h-12 flex justify-between items-center w-full max-w-md mx-auto">
             <div class="flex items-center gap-2 cursor-pointer">
                 <i class="fa-solid fa-lock text-sm hidden"></i>
@@ -800,12 +791,9 @@
             6: { images: ["https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(1).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg", "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte).jpg"], likes: 988, caption: "🌴🌺🌊 (Mi hombrote en la ultima foto, muy mamada de mi parte) 💪🏻", time: "HACE 1 SEMANA" }
         };
 
-        let currentView = 'dm'; 
+        let currentView = 'ig'; 
         let isModalOpen = false;
-        let isBotTyping = false;
-        let currentBotStep = 0; 
-        let fallbackTimeout = null;
-        let chatStep = 0;
+        let isBotTyping = false; 
         let currentPostId = null;
         let postStates = {};
         let landingDownsellTimer = null;
@@ -813,65 +801,17 @@
         
         Object.keys(postsData).forEach(id => { postStates[id] = { liked: false, saved: false }; });
 
-        // ========================================================
-        // ESTRUTURA DO FUNIL HUMANIZADO (MÉXICO)
-        // ========================================================
-        const botMessagesStep1 = [
-            { type: 'text', content: "Holaaa bb, ¿viniste a ver mi panochita? 🤭" }
-        ];
-        const botMessagesStep1_1_Fallback = [
-            { type: 'text', content: "¿Qué pasó chiquito? ¿Te mando un videíto de prueba para que te animes? 👀" }
-        ];
-        const botMessagesStep2 = [
-            { type: 'text', content: "Me llamo Camila, tengo 21 añitos y vivo aquí en tu ciudad 📍" },
-            { type: 'text', content: "Fíjate que apenas ando empezando a vender mis fotos y videos, y también hago encuentros presenciales 😈" },
-            { type: 'text', content: "Te voy a mandar un videíto, si te prende me dices y te mando más, ¿va?" }
-        ];
-        const botMessagesStep2_2_Fallback = [
-            { type: 'text', content: "Ay, ¿no quieres ver mi panochita bien mojadita entonces? 🥺" }
-        ];
-        const botMessagesStep3 = [
-            { type: 'text', content: "Va amor, te mando una pruebita nada más, ojalá te guste mucho." },
-            { type: 'text', content: "Si quieres tengo cosas mucho más ricas..." },
-            { type: 'video', content: "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/1_5042113862577423770.mp4", caption: null },
-            { type: 'text', content: "¿Qué tal te pareció? 🥵 ¿Te mando otro?" }
-        ];
-        const botMessagesStep3_3_Fallback = [
-            { type: 'text', content: "¿Te mando uno más pasadito de tono para que veas lo que te pierdes? 🔥" }
-        ];
-        const botMessagesStep4 = [
-            { type: 'text', content: "Ay ya te lo voy a mandar, la neta ando bien caliente ahorita... 🤤" },
-            { type: 'video', content: "https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/1_5042113862577423768.mp4", caption: null },
-            { type: 'text', content: "Mira cómo tengo la panocha, toda escurriendo por tu culpa. Quería que te gustara mucho." },
-            { type: 'text', content: "Oye, si quieres ver todo sin censura, hacer videollamada ahorita mismo o hasta agendar para vernos en persona, te dejo mi menú privado 👇" },
-            { type: 'text', content: "✨ MI MENÚ PRIVADO ✨<br><br>🔥 <b>PACK CALENTAMIENTO — $150 MXN</b><br>• 15 Archivos (Fotos y vídeos míos tocándome)<br><br>📱 <b>NOVIO VIRTUAL — $350 MXN</b><br>• +100 Archivos (Anal, squirting)<br>• Mi WhatsApp personal para sextear 24/7.<br><br>👑 <b>CITA PRESENCIAL — $2,500 MXN</b><br>• Trato de novios (2 horas).<br>• Incluye mi WhatsApp para agendar tu cita." },
-            { type: 'text', content: "Acepto transferencia <b>CLABE</b> o depósito en <b>OXXO</b>. ¿Cuál te late más, guapo? Dime para pasarte la cuenta 💳" }
-        ];
-        const botMessagesStep5 = [
-            { type: 'text', content: "Claro amor, aquí tienes mi CLABE interbancaria:" },
-            { type: 'text', content: "🏦 <b>Banco:</b> STP (o el que uses)<br>🔢 <b>CLABE:</b> <span class='font-mono font-bold text-ig-blue text-lg tracking-widest'>123456789012345678</span><br>👤 <b>A nombre de:</b> Camila<br><button onclick=\"navigator.clipboard.writeText('123456789012345678'); this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> ¡COPIADO!'; this.classList.replace('bg-ig-blue', 'bg-green-600'); setTimeout(() => { this.innerHTML='<i class=\\'fa-regular fa-copy\\'></i> COPIAR CLABE'; this.classList.replace('bg-green-600', 'bg-ig-blue'); }, 2000);\" class=\"mt-3 bg-ig-blue hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-[14px] w-full transition-colors flex items-center justify-center gap-2 active:scale-95\"><i class=\"fa-regular fa-copy\"></i> COPIAR CLABE</button>" },
-            { type: 'text', content: "Mándame la captura de pantalla cuando quede listo para mandarte todo tu contenido." },
-            { type: 'text', content: "Y mira, te dejo este último regalito para que veas que soy 100% real y me deposites con confianza 😉" },
-            { type: 'video', content: "https://pub-c737fc13f75b440d8a7a6655e86b4ead.r2.dev/1_5042113862577423788.mp4", caption: "Me avisas en cuanto quede el pago bb 😘" }
-        ];
-
         document.addEventListener('DOMContentLoaded', () => {
             // Dispara o registro do clique (Pressel -> Hottrack) logo no carregamento.
             startClickRegistration();
 
-            // Força início no DM conforme pedido
-            document.getElementById('vista-ig').classList.add('hidden');
-            document.getElementById('vista-dm').classList.remove('hidden');
-            document.getElementById('vista-dm').classList.add('flex');
-            
-            setTimeout(() => {
-                const input = document.getElementById('dm-input');
-                input.value = "Hola, vine a ver tu contenido 😈";
-                sendDMCustom();
-            }, 1000);
-            
             const chatMain = document.getElementById('chat-main-container');
             if(chatMain) chatMain.addEventListener('click', hideCustomKeyboard);
+
+            // Simula uma notificação push após 2.5s para atrair o usuário para a DM
+            setTimeout(() => {
+                showIGNotification("camila.ofc", "Holiii bb ❤️");
+            }, 2500);
         });
 
         // ========================================================
@@ -1018,8 +958,10 @@
         }
 
         // ========================================================
-        // CORE FUNNEL LOGIC
+        // NOVA LÓGICA DE AUTO-MENSAGEM (ÚNICA CTA)
         // ========================================================
+        let hasSentAutoReply = false;
+
         function sendDM() {
             const input = document.getElementById('dm-input');
             const text = input.value.trim();
@@ -1045,89 +987,62 @@
                 const vistoEl = document.getElementById(`${userBubbleId}-visto`);
                 if(vistoEl) vistoEl.classList.remove('hidden');
                 
-                handleUserReply();
-            }, 1800);
+                triggerAutoReply();
+            }, 1200);
         }
 
-        function handleUserReply() {
-            clearTimeout(fallbackTimeout);
-            if (isBotTyping) return;
+        async function triggerAutoReply() {
+            if (hasSentAutoReply) return;
+            hasSentAutoReply = true;
             
-            if (chatStep === 0) {
-                chatStep = 1;
-                currentBotStep = 1;
-                setTimeout(() => {
-                    processBotQueue(botMessagesStep1, () => setFallback(1));
-                }, 3000);
-            } else if (currentBotStep === 1) {
-                currentBotStep = 2;
-                processBotQueue(botMessagesStep2, () => setFallback(2));
-            } else if (currentBotStep === 2) {
-                currentBotStep = 3;
-                processBotQueue(botMessagesStep3, () => setFallback(3));
-            } else if (currentBotStep === 3) {
-                currentBotStep = 4;
-                processBotQueue(botMessagesStep4, () => setFallback(4));
-            } else if (currentBotStep === 4) {
-                currentBotStep = 5;
-                processBotQueue(botMessagesStep5, null); 
-            }
-        }
+            showTypingIndicator();
+            
+            // Pausa simulando digitação (2.5 segundos)
+            await new Promise(r => setTimeout(r, 2500));
+            
+            removeTypingIndicator();
+            
+            const chat = document.getElementById('chat-messages');
+            
+            const autoReplyHtml = `
+                <div class="flex gap-2 fade-in mt-1 mb-1 w-full">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover shrink-0">
+                    <div class="bg-[#262626] text-white text-[14px] p-3 rounded-3xl rounded-tl-sm border border-[#363636] max-w-[85%] leading-snug flex flex-col gap-2 shadow-lg">
+                        <p>¡Holaaa bb! 😈 Me banearon la otra cuenta, así que todo mi contenido sin censura y mis citas las estoy manejando directo en mi perfil VIP.</p>
+                        
+                        <div class="w-full rounded-xl overflow-hidden relative cursor-pointer" onclick="playVideo('https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/1_5042113862577423770.mp4')">
+                            <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/Viernes%20de%20playita-)%F0%9F%A6%80%F0%9F%8C%8A%E2%9B%B0%EF%B8%8F.jpg" class="w-full h-32 object-cover opacity-70">
+                            <i class="fa-solid fa-play absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-3xl drop-shadow-lg"></i>
+                        </div>
 
-        function setFallback(step) {
-            fallbackTimeout = setTimeout(() => {
-                if (isBotTyping) return;
-                if (step === 1) processBotQueue(botMessagesStep1_1_Fallback, null);
-                if (step === 2) processBotQueue(botMessagesStep2_2_Fallback, null);
-                if (step === 3) processBotQueue(botMessagesStep3_3_Fallback, null);
-            }, 20000); // 20s inatividade
-        }
-
-        async function processBotQueue(messages, callback) {
-            isBotTyping = true;
-            for (let i = 0; i < messages.length; i++) {
-                const msgObj = messages[i];
-                
-                if (msgObj.type === 'text') {
-                    // Calculo de digitação: mais demorado para ficar realista (85ms/char)
-                    const charCount = msgObj.content.length;
-                    let totalTypingTime = charCount * 85; 
-                    if (totalTypingTime < 4000) totalTypingTime = 4000; 
-                    if (totalTypingTime > 12000) totalTypingTime = 12000; 
-                    
-                    const pausePoint = Math.floor(totalTypingTime * 0.4);
-                    const resumePoint = Math.floor(totalTypingTime * 0.6);
-                    
-                    showTypingIndicator();
-                    await new Promise(r => setTimeout(r, pausePoint));
-                    removeTypingIndicator();
-                    
-                    await new Promise(r => setTimeout(r, 600)); 
-                    
-                    showTypingIndicator();
-                    await new Promise(r => setTimeout(r, totalTypingTime - resumePoint));
-                    removeTypingIndicator();
-                    
-                    appendBotMessage(msgObj.content);
-                } else if (msgObj.type === 'video') {
-                    showTypingIndicator();
-                    await new Promise(r => setTimeout(r, 5000)); 
-                    removeTypingIndicator();
-                    appendBotVideoViewOnce(msgObj.content, msgObj.caption);
-                }
-                
-                await new Promise(r => setTimeout(r, 1200)); 
-            }
-            isBotTyping = false;
-            if(callback) callback();
+                        <div class="bg-[#1a1a1a] p-2 rounded-lg mt-1 border border-[#333]">
+                            <p class="font-bold text-center text-ig-blue mb-1 text-xs uppercase">🔥 Mis Paquetes 🔥</p>
+                            <ul class="text-[12px] space-y-1 text-gray-300">
+                                <li>🔸 <b>Básico:</b> $50 MXN</li>
+                                <li>🔥 <b>Full (Rudo/Anal):</b> $110 MXN</li>
+                                <li>👑 <b>VIP Total (Videollamada):</b> $230 MXN</li>
+                                <li>💎 <b>Élite (Presencial):</b> $450 MXN</li>
+                            </ul>
+                        </div>
+                        
+                        <button onclick="abrirLanding()" class="bg-ig-blue hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-xl text-[13px] w-full transition-colors flex items-center justify-center gap-2 mt-1 shadow-[0_4px_15px_rgba(0,149,246,0.3)] active:scale-95">
+                            🔒 DESBLOQUEAR AHORA
+                        </button>
+                    </div>
+                </div>
+            `;
+            chat.insertAdjacentHTML('beforeend', autoReplyHtml);
+            scrollToBottom();
+            showIGNotification("camila.ofc", "Te envió su menú privado 🔥");
         }
 
         function showTypingIndicator() {
             if (document.getElementById('typing-indicator')) return;
+            isBotTyping = true;
             const chat = document.getElementById('chat-messages');
             const indicator = `
                 <div id="typing-indicator" class="flex gap-2 fade-in mt-1 mb-2">
-                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
+                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover shrink-0">
                     <div class="bg-[#262626] py-3 px-4 rounded-3xl rounded-tl-sm border border-[#363636] flex gap-1.5 items-center h-10">
                         <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
                         <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
@@ -1140,65 +1055,9 @@
         }
 
         function removeTypingIndicator() {
+            isBotTyping = false;
             const indicator = document.getElementById('typing-indicator');
             if(indicator) indicator.remove();
-        }
-
-        function appendBotMessage(text) {
-            const chat = document.getElementById('chat-messages');
-            const msgHtml = `
-                <div class="flex gap-2 fade-in mt-1 mb-1">
-                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
-                    <div class="bg-[#262626] text-white text-[15px] py-2.5 px-4 rounded-3xl rounded-tl-sm border border-[#363636] max-w-[80%] leading-snug">
-                        ${text}
-                    </div>
-                </div>
-            `;
-            chat.insertAdjacentHTML('beforeend', msgHtml);
-            scrollToBottom();
-
-            showIGNotification("camila.ofc", text);
-        }
-
-        function appendBotVideoViewOnce(videoUrl, caption) {
-            const chat = document.getElementById('chat-messages');
-            const msgId = 'vid-' + Date.now();
-            
-            const captionHtml = caption ? `<div class="text-[13px] text-gray-300 mt-1">${caption}</div>` : '';
-            
-            const msgHtml = `
-                <div class="flex gap-2 fade-in mt-1 mb-1">
-                    <img src="https://pub-0bda1b17f0ae4acbbc668977c272dad5.r2.dev/%F0%9F%8C%B4%F0%9F%AA%B8%F0%9F%8C%8A%F0%9F%8C%BA%20(Mi%20hombrote%20en%20la%20ultima%20foto%2C%20muy%20mamada%20de%20mi%20parte)%20(2).jpg" class="w-7 h-7 rounded-full self-end object-cover">
-                    <div class="flex flex-col max-w-[70%]">
-                        <div class="bg-[#262626] border border-[#363636] rounded-3xl rounded-tl-sm p-1 pr-4 flex items-center gap-3 cursor-pointer transition-opacity" id="${msgId}" onclick="playViewOnce('${videoUrl}', '${msgId}')">
-                            <div class="w-9 h-9 bg-ig-blue rounded-full flex items-center justify-center shrink-0">
-                                <i class="fa-solid fa-play text-white text-sm ml-0.5"></i>
-                            </div>
-                            <span class="text-white text-[14px] font-semibold italic">▶ Ver video</span>
-                        </div>
-                        ${captionHtml}
-                    </div>
-                </div>
-            `;
-            chat.insertAdjacentHTML('beforeend', msgHtml);
-            scrollToBottom();
-
-            showIGNotification("camila.ofc", "📹 Te envió un video efímero");
-        }
-
-        function playViewOnce(url, msgId) {
-            const el = document.getElementById(msgId);
-            if (el.classList.contains('opened')) return;
-            
-            el.classList.add('opened', 'opacity-60');
-            el.innerHTML = `
-                <div class="w-9 h-9 bg-transparent border border-gray-500 rounded-full flex items-center justify-center shrink-0">
-                    <i class="fa-solid fa-check text-gray-400 text-sm"></i>
-                </div>
-                <span class="text-gray-400 text-[14px] font-semibold italic">Abierto</span>
-            `;
-            
-            playVideo(url);
         }
 
         function scrollToBottom() {
@@ -1326,7 +1185,7 @@
         // ========================================================
         // 2. GERAÇÃO DA COBRANÇA SPEI UTILIZANDO O CLICK ID REGISTRADO
         // ========================================================
-        async function gerarCobrancaSPEI() {
+        async function gerarCobrancaSPEI(valorCentavos) {
             // Usa o click_id verdadeiro gerado pelo backend da hottrack no momento de acesso. 
             // Se falhou ou a chamada for mais rápida que a api, tenta fallback via parametro da URL.
             const finalClickId = registeredClickId || getTfId() || 'lead_organico';
@@ -1339,11 +1198,11 @@
                         'x-api-key': 'b8d5ca45-58d0-47be-87b2-367038994c6b' 
                     },
                     body: JSON.stringify({
-                        click_id: finalClickId, // Agora o click ID está linkado com sua conta!
-                        value_cents: 0,         
+                        click_id: finalClickId, 
+                        value_cents: valorCentavos,         
                         currency: "MXN",        
                         product: { 
-                            name: "Suscripción VIP / Propina" 
+                            name: "SEMTELEGRAM" 
                         }
                     })
                 });
@@ -1374,7 +1233,9 @@
             document.getElementById('checkout-title').innerText = planName;
             document.getElementById('checkout-desc').innerText = "Acceso seguro y anónimo";
             
-            document.getElementById('checkout-price').innerText = "Valor Libre";
+            // Subsitui o "Valor Libre" pelo valor exato da prop enviada pelo botão (ex: $50 MXN)
+            let formattedPrice = "$" + (price / 100) + " <span class='text-sm font-normal'>MXN</span>";
+            document.getElementById('checkout-price').innerHTML = formattedPrice;
 
             document.getElementById('spei-loading').classList.remove('hidden');
             document.getElementById('spei-data').classList.add('hidden');
@@ -1387,8 +1248,8 @@
             }, 10);
             document.body.style.overflow = 'hidden';
 
-            // CHAMA A API DA HOTTRACK PARA GERAR O CHECKOUT
-            gerarCobrancaSPEI();
+            // CHAMA A API DA HOTTRACK PARA GERAR O CHECKOUT ENVIANDO O PREÇO DO PACOTE
+            gerarCobrancaSPEI(price);
         }
 
         function closeModal(modalId) {
